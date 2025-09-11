@@ -1,0 +1,112 @@
+/* src/Codex/ArcaneThreads/navbar.css */
+.mobile-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background: var(--mantine-color-body);
+    border-top: 1px solid var(--mantine-color-gray-3);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    color: var(--mantine-color-gray-6);
+}
+
+.mobile-nav-item.active {
+    color: var(--mantine-color-blue-6);
+    background: var(--mantine-color-blue-0);
+}
+
+.nav-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.desktop-nav-item {
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    color: var(--mantine-color-gray-7);
+}
+
+.desktop-nav-item:hover {
+    background: var(--mantine-color-gray-1);
+}
+
+.desktop-nav-item.active {
+    color: var(--mantine-color-blue-6);
+    background: var(--mantine-color-blue-0);
+}
+
+.sidebar-nav-item {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    color: var(--mantine-color-gray-7);
+}
+
+.sidebar-nav-item:hover {
+    background: var(--mantine-color-gray-1);
+}
+
+.sidebar-nav-item.active {
+    color: var(--mantine-color-blue-6);
+    background: var(--mantine-color-blue-0);
+}
+
+@media (prefers-color-scheme: dark) {
+    .mobile-navbar {
+        background: var(--mantine-color-dark-7);
+        border-top-color: var(--mantine-color-dark-4);
+    }
+
+    .mobile-nav-item {
+        color: var(--mantine-color-gray-4);
+    }
+
+    .mobile-nav-item.active {
+        color: var(--mantine-color-blue-4);
+        background: var(--mantine-color-dark-5);
+    }
+
+    .desktop-nav-item {
+        color: var(--mantine-color-gray-3);
+    }
+
+    .desktop-nav-item:hover {
+        background: var(--mantine-color-dark-5);
+    }
+
+    .desktop-nav-item.active {
+        color: var(--mantine-color-blue-4);
+        background: var(--mantine-color-dark-5);
+    }
+
+    .sidebar-nav-item {
+        color: var(--mantine-color-gray-3);
+    }
+
+    .sidebar-nav-item:hover {
+        background: var(--mantine-color-dark-5);
+    }
+
+    .sidebar-nav-item.active {
+        color: var(--mantine-color-blue-4);
+        background: var(--mantine-color-dark-5);
+    }
+}

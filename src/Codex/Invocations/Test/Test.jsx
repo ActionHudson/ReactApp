@@ -1,13 +1,15 @@
 import { Container } from '@mantine/core';
 
-import { HeroSection } from '../../Enchantments/HeroSection/HeroSection';
 import { MainLayout } from '../../Grimoires/MainLayout/Mainlayout';
+import Text from '../../Runes/Text/Text';
 
-export default function LandingPage () {
+export default function Test () {
     return (
         <MainLayout>
             <Container size="md" py="xl">
-                <HeroSection />
+                <Text>
+                    Test
+                </Text>
             </Container>
         </MainLayout>
     );

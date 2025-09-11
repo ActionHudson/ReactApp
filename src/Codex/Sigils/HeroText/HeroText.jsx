@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core';
 
-import { Text } from '../../Runes/Text/Text';
+import Text from '../../Runes/Text/Text';
 import { Title } from '../../Runes/Title/Title';
 
 export const HeroText = ({ title, description }) => (
@@ -8,7 +8,7 @@ export const HeroText = ({ title, description }) => (
         <Title ta="center">
             { title }
         </Title>
-        <Text ta="center" c="dimmed">
+        <Text ta="center" dimmed={ true }>
             { description }
         </Text>
     </Stack>
