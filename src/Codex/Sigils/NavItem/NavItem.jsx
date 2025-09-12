@@ -7,16 +7,17 @@ import Text from '../../Runes/Text/Text';
 export default function NavItem ({
     icon,
     label,
-    link = undefined,
+    path = undefined,
     disabled = false,
     active = false,
     ...props
 }) {
+
     return (
         <div
             onClick={ () => {
-                if (!disabled && link) {
-                    window.location.href = link;
+                if (!disabled && path) {
+                    window.location.href = path;
                 }
             } }
             style={ {
@@ -30,7 +31,7 @@ export default function NavItem ({
             <Stack
                 justify="center"
                 align="center"
-                style={ { } }
+                style={ { color: active ? "red" : "black" } }
                 gap="xs"
             >
                 <Icon icon={ icon } size='xl' />
@@ -43,9 +44,10 @@ export default function NavItem ({
 }
 
 NavItem.propTypes = {
+    key: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]),
     icon: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    link: PropTypes.string,
+    path: PropTypes.string,
     disabled: PropTypes.bool,
     active: PropTypes.bool
 };

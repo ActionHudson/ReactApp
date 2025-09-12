@@ -2,10 +2,9 @@ import { Container } from '@mantine/core';
 import { useLocation } from 'react-router-dom';
 
 import { NavConfig } from '../../ArcaneThreads/NavConfig';
-import { HeroSection } from '../../Enchantments/HeroSection/HeroSection';
 import { MainLayout } from '../../Grimoires/MainLayout/Mainlayout';
 
-export default function LandingPage () {
+export default function Settings () {
     const location = useLocation();
 
     const navlinksWithActive = NavConfig.map(link => ({
@@ -16,7 +15,7 @@ export default function LandingPage () {
     return (
         <MainLayout navlinks={ navlinksWithActive }>
             <Container size="md" py="xl">
-                <HeroSection />
+                Settings Page
             </Container>
         </MainLayout>
     );
