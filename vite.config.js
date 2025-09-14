@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
     plugins: [react()],
+    baseL "/ReactApp/"
     server: {
         port: 3000
     },
