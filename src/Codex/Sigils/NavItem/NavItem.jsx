@@ -1,8 +1,9 @@
-import { Stack } from '@mantine/core';
-import PropTypes from 'prop-types';
+import { Stack } from "@mantine/core";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
-import Icon from '../../Runes/Icon/Icon';
-import Text from '../../Runes/Text/Text';
+import Icon from "../../Runes/Icon/Icon";
+import Text from "../../Runes/Text/Text";
 
 export default function NavItem ({
     icon,
@@ -12,34 +13,30 @@ export default function NavItem ({
     active = false,
     ...props
 }) {
-
     return (
-        <div
-            onClick={ () => {
-                if (!disabled && path) {
-                    window.location.href = path;
-                }
-            } }
+        <Link
+            to={ disabled || !path ? "#" : path }
             style={ {
-                width: '100%',
-                marginTop: '1rem',
-                marginBottom: '1rem',
-                height: '100%', cursor: 'pointer'
+                textDecoration: "none",
+                marginTop: "1rem",
+                marginBottom: "1rem",
+                pointerEvents: disabled ? "none" : "auto",
+                opacity: disabled ? 0.5 : 1
             } }
-            { ...props }
         >
             <Stack
                 justify="center"
                 align="center"
                 style={ { color: active ? "red" : "black" } }
                 gap="xs"
+                { ...props }
             >
-                <Icon icon={ icon } size='xl' />
+                <Icon icon={ icon } size="xl" />
                 <Text size="sm">
                     { label }
                 </Text>
             </Stack>
-        </div>
+        </Link>
     );
 }
 

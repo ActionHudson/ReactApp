@@ -22,6 +22,7 @@ export const NavConfig = [
     {
         icon: "IconMail",
         label: "Contact",
-        path: "/contact"
+        path: "/contact",
+        disabled: true
     }
 ];
