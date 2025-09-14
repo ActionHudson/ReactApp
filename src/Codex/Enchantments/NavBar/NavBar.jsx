@@ -13,6 +13,7 @@ export default function NavBar ({ navlinks }) {
                     label={ item.label }
                     path={ item.path }
                     active={ item.active || false }
+                    disabled={ item.disabled || false }
                 />
             )) }
         </SimpleGrid>
