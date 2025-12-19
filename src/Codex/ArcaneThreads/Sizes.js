@@ -1,7 +1,3 @@
-export const spacing = {
-    xl: 32
-};
-
 export const FontSize = {
     xs: '0.75rem',  // 12px
     sm: '0.875rem', // 14px
@@ -15,8 +11,4 @@ export const FontWeight = {
     normal: '400',
     semibold: '500',
     bold: '600'
-};
-
-export const maxWidths = {
-    text: 600
 };

@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import About from './Codex/Invocations/About/About';
-import Contact from './Codex/Invocations/Contact/Contact';
 import LandingPage from './Codex/Invocations/LandingPage/LandingPage';
 import Profile from './Codex/Invocations/Profile/Profile';
+import Recipes from './Codex/Invocations/Recipes/Recipes';
 import Settings from './Codex/Invocations/Settings/Settings';
 
 const basename = import.meta.env.MODE === "production" ? "/ReactApp" : "/";
@@ -27,8 +27,8 @@ export const router = createBrowserRouter(
             element: <About />
         },
         {
-            path: '/Contact',
-            element: <Contact />
+            path: '/recipes',
+            element: <Recipes />
         }
     ],
     { basename }

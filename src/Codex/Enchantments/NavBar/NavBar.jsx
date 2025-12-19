@@ -5,7 +5,7 @@ import NavItem from '../../Sigils/NavItem/NavItem';
 
 export default function NavBar ({ navlinks }) {
     return (
-        <SimpleGrid cols={ 5 } spacing="xs">
+        <SimpleGrid cols={ navlinks.length } spacing="xs">
             { navlinks.map((item, index) => (
                 <NavItem
                     key={ index }
