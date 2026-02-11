@@ -1,67 +1,57 @@
-import { Container } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Button } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 
-import { NavConfig } from '../../ArcaneThreads/NavConfig';
 import { MainLayout } from '../../Grimoires/MainLayout/Mainlayout';
-
+import Icon from '../../Runes/Icon/Icon';
 export default function LandingPage () {
-    const location = useLocation();
-
-    // State for API data
-    const [ allData, setAllData ] = useState([]);
-    const [ singleRecord, setSingleRecord ] = useState(null);
-    const [ loading, setLoading ] = useState(true);
-    const [ error, setError ] = useState(null);
-
-    const navlinksWithActive = NavConfig.map(link => ({
-        ...link,
-        active: location.pathname === link.path
-    }));
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-
-                // Fetch all records
-                const allResponse = await fetch('/ReactApp/api/recipes/get-all.php');
-                const allResult = await allResponse.json();
-
-                if (allResult.success) {
-                    setAllData(allResult.data);
-                }
-
-                // Fetch single record by ID (example: ID = 1)
-                const singleResponse = await fetch(
-                    '/ReactApp/api/recipes/get-by-id.php?id=1'
-                );
-                const singleResult = await singleResponse.json();
-
-                if (singleResult.success) {
-                    setSingleRecord(singleResult.data);
-                }
-
-            } catch (err) {
-                setError(err.message);
-                console.error('Error fetching data:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    console.log('All Data:', allData);
-    console.log('Single Record:', singleRecord);
-    console.log('Loading:', loading);
-    console.log('Error:', error);
 
     return (
-        <MainLayout navlinks={ navlinksWithActive }>
-            <Container size="md" py="xl">
-            </Container>
+        <MainLayout>
+            { /* <Button
+                onClick={ () => notifications.show({ 
+                message: 'I will cloawdse in 4 seconds' 
+                }) }
+            >
+                Notifications Provider timeout
+            </Button>
+
+            <Button
+                onClick={ () => notifications.show({
+                    color: 'blue',
+                    title: 'I will never close',
+
+                    // message: 'unless yoawdawdu click X',
+                    autoClose: false
+                }) }
+            >
+                Never closes automatically
+            </Button>
+            <Button
+                onClick={ () => {
+                    const id = notifications.show({
+                        loading: true,
+                        title: 'Loading your data',
+                        message: 'Data will be loaded in 3 seconds, you cannot close this yet',
+                        autoClose: false,
+                        withCloseButton: false
+                    });
+
+                    setTimeout(() => {
+                        notifications.update({
+                            id,
+                            color: 'teal',
+
+                            // title: 'Data was loaded',
+                            message: 'Notification will close in 2 seconds, you can close this notification now',
+                            icon: <Icon size={ 18 } />,
+                            loading: false,
+                            autoClose: 2000
+                        });
+                    }, 3000);
+                } }
+            >
+                Show update notification
+            </Button> */ }
         </MainLayout>
     );
 }

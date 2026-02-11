@@ -96,7 +96,7 @@ npm run build-storybook  # Build Storybook for production
 ### UI & Styling
 
 - **Mantine** - React components library with excellent TypeScript support
-- **PostCSS** - CSS processing with Mantine-specific plugins
+- **PostCSS** - CSS Mantine-specific plugin
 - **CSS Custom Properties** - Theme-aware styling system
 
 ### Development Tools
