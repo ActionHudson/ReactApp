@@ -20,7 +20,7 @@ This project uses a **fantasy-themed atomic design methodology** that organizes 
 
 ```
 src/Codex/
-├── ArcaneThreads/     # Design tokens (colors, spacing, typography)
+├── ArcaneThreads/    # Design tokens (colors, spacing, typography)
 ├── Runes/            # Atoms - Basic UI elements (Button, Text, Title)
 ├── Sigils/           # Molecules - Simple component combinations
 ├── Enchantments/     # Organisms - Complex feature components

@@ -1,4 +1,3 @@
-// Define your custom theme
 export const Theme = {
     colorScheme: 'light',
     primaryColor: 'blue',

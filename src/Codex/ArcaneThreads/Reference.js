@@ -1,6 +1,6 @@
-// Base examples (original three)
 export const ReferencesBase = [
     {
+        id: '1',
         name: 'Small Glass Bowl',
         type: 'bowl',
         domain: ['kitchen'],
@@ -12,6 +12,7 @@ export const ReferencesBase = [
         }
     },
     {
+        id: '2',
         name: 'Medium Glass Bowl',
         type: 'bowl',
         domain: ['kitchen'],
@@ -23,6 +24,7 @@ export const ReferencesBase = [
         }
     },
     {
+        id: '3',
         name: 'Large Pyrex Mixing Bowl',
         type: 'bowl',
         domain: ['kitchen'],
@@ -45,7 +47,6 @@ function genWeight (base, i) {
 
 function genCapacity (type, i) {
     if ([ 'cup', 'mug', 'jar', 'bowl', 'container' ].includes(type)) {
-
         const base = { cup: 200, mug: 350, jar: 500, bowl: 300, container: 750 }[type] || 250;
         return base + i % 10 * 25;
     }
@@ -63,7 +64,8 @@ const generated = Array.from({ length: 97 }).map((_, idx) => {
     const weight = genWeight(120, idx);
     const capacityValue = genCapacity(type, idx);
 
-    const item = {
+    return {
+        id: String(i),
         name: `${ type.charAt(0).toUpperCase() + type.slice(1) } Example ${ i }`,
         type,
         domain: ['kitchen'],
@@ -74,8 +76,18 @@ const generated = Array.from({ length: 97 }).map((_, idx) => {
             capacity: { value: capacityValue, unit: 'ml' }
         }
     };
-
-    return item;
 });
+
+export const Temperatures = [
+    { id: '1', category: 'Meat', setting: 'Pork (Min)', value: 63, unit: '°C' },
+    { id: '2', category: 'Meat', setting: 'Beef (Medium Rare)', value: 54, unit: '°C' },
+    { id: '3', category: 'Meat', setting: 'Poultry', value: 74, unit: '°C' },
+    { id: '4', category: 'Meat', setting: 'Ground Meat', value: 71, unit: '°C' },
+    { id: '5', category: 'Storage', setting: 'Fridge', value: 4, unit: '°C' },
+    { id: '6', category: 'Storage', setting: 'Freezer', value: -18, unit: '°C' },
+    { id: '7', category: 'Baking', setting: 'Yeast Activation', value: 40, unit: '°C' },
+    { id: '8', category: 'Sugar', setting: 'Soft Ball Stage', value: 112, unit: '°C' },
+    { id: '9', category: 'Sugar', setting: 'Hard Crack Stage', value: 150, unit: '°C' }
+];
 
 export const References = [ ...ReferencesBase, ...generated ];

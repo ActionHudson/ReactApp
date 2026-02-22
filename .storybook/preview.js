@@ -1,4 +1,11 @@
-/** @type { import('@storybook/react-vite').Preview } */
+import { MantineProvider } from '@mantine/core';
+import { createElement } from 'react';
+import '@mantine/core/styles.css';
+
+export const decorators = [
+    Story => createElement(MantineProvider, null, createElement(Story))
+];
+
 const preview = {
     parameters: {
         controls: {

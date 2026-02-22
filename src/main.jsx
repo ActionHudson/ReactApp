@@ -8,6 +8,7 @@ import { RouterProvider } from 'react-router-dom';
 import { Theme } from './Codex/ArcaneThreads/Theme';
 import Notifications from './Codex/Runes/Notification/Notification';
 import { router } from './routes';
+import './main.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>

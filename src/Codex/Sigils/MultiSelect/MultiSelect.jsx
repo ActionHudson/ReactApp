@@ -21,6 +21,7 @@ export default function MultiSelect ({
             leftSectionPointerEvents="none"
             leftSection={ <Icon icon="IconSearch" size={ 16 } /> }
             radius="xl"
+            size='md'
             onChange={ onChange }
             value={ selected }
             { ...props }

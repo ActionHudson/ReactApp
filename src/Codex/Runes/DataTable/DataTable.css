@@ -1,0 +1,12 @@
+.custom-table-scroll .mantine-ScrollArea-thumb {
+    background-color: #ff6b9d !important;
+}
+
+.custom-table-scroll .mantine-ScrollArea-thumb:hover {
+    background-color: #ff4d88 !important;
+}
+
+.custom-table-scroll .mantine-ScrollArea-scrollbar {
+    width: 9px !important;
+    background-color: transparent !important;
+}

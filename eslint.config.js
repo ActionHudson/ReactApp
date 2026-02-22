@@ -3,7 +3,6 @@ import importPlugin from 'eslint-plugin-import';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import storybook from 'eslint-plugin-storybook';
 import globals from 'globals';
 
 export default [
@@ -170,7 +169,7 @@ export default [
             'default-case-last': 'error',
             'default-param-last': 'error',
             'dot-notation': 'error',
-            eqeqeq: 'error',
+            'eqeqeq': 'error',
             'no-inner-declarations': 'error',
             'grouped-accessor-pairs': 'error',
             'guard-for-in': 'error',

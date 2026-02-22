@@ -1,4 +1,5 @@
 import { AppShell, Container } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 
@@ -15,14 +16,36 @@ export const MainLayout = ({ children }) => {
             active: location.pathname === linkPath || location.pathname.startsWith(`${ linkPath }/`)
         };
     });
-
+    const isLarge = useMediaQuery('(min-width: 1200px)');
     return (
-        <AppShell size="md">
-            <AppShell.Main bg="#e4e4e4">
-                <Container p="md">
+        <AppShell
+            padding={ 0 }
+            header={ {
+                height: 80,
+                collapsed: !isLarge,
+                offset: isLarge
+            } }
+            footer={ {
+                height: 80,
+                collapsed: isLarge,
+                offset: !isLarge
+            } }
+        >
+            <AppShell.Header>
+                <NavBar navlinks={ navlinksWithActive } />
+            </AppShell.Header>
+
+            <AppShell.Main bg="#E4E4E4" h="100vh">
+                <Container
+                    fluid
+                    p={ 16 }
+                    h="100%"
+                    style={ { overflowY: 'auto', overflowX: 'hidden' } }
+                >
                     { children }
                 </Container>
             </AppShell.Main>
+
             <AppShell.Footer>
                 <NavBar navlinks={ navlinksWithActive } />
             </AppShell.Footer>

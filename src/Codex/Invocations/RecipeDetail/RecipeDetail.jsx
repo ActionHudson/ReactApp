@@ -4,15 +4,16 @@ import {
 } from '@mantine/core';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 
 import { MainLayout } from '../../Grimoires/MainLayout/Mainlayout';
 import Icon from '../../Runes/Icon/Icon';
-export default function RecipeDetail() {
-    const { id } = useParams();
-    const [ingredientMultiplier, setIngredientMultiplier] = useState({ multiplier: 1, icon: 'IconMultiplier1x' });
+export default function RecipeDetail () {
+    const [
+        ingredientMultiplier,
+        setIngredientMultiplier
+    ] = useState({ multiplier: 1, icon: 'IconMultiplier1x' });
 
-    const [loading, setLoading] = useState(true);
+    const [ loading, setLoading ] = useState(true);
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
@@ -46,20 +47,20 @@ export default function RecipeDetail() {
         });
     };
 
-    function AccordionControl({ children, ...props }) {
+    function AccordionControl ({ children, ...props }) {
         return (
             <Center>
-                <Accordion.Control {...props}>
-                    {children}
+                <Accordion.Control { ...props }>
+                    { children }
                 </Accordion.Control>
                 <ActionIcon
                     size="lg"
                     variant="subtle"
                     color="gray"
-                    style={{ marginRight: '1rem' }}
-                    onClick={handleMultiplierClick}
+                    style={ { marginRight: '1rem' } }
+                    onClick={ handleMultiplierClick }
                 >
-                    <Icon icon={ingredientMultiplier.icon} size={20} />
+                    <Icon icon={ ingredientMultiplier.icon } size={ 20 } />
                 </ActionIcon>
             </Center>
         );
@@ -72,63 +73,63 @@ export default function RecipeDetail() {
         <MainLayout>
             <Stack
                 gap="md"
-                style={{
+                style={ {
                     backgroundColor: 'white',
                     padding: '1rem',
                     borderRadius: '0.5rem',
                     marginBottom: '5rem'
-                }}>
-                <Title order={1}>Recipe Title Would Go Here !</Title>
-                <Accordion variant="separated" radius="md" multiple defaultValue={['overview']} chevronPosition="left">
+                } }>
+                <Title order={ 1 }>Recipe Title Would Go Here !</Title>
+                <Accordion variant="separated" radius="md" multiple defaultValue={ ['overview'] } chevronPosition="left">
                     <Accordion.Item value="overview">
                         <Accordion.Control>
                             Overview
                         </Accordion.Control>
                         <Accordion.Panel>
-                            <SimpleGrid cols={2}>
-                                {loading ? (
+                            <SimpleGrid cols={ 2 }>
+                                { loading ? (
                                     <Skeleton
                                         visible
-                                        radius={0}
+                                        radius={ 0 }
                                         w="100%"
-                                        style={{ aspectRatio: "1 / 1" }}
+                                        style={ { aspectRatio: "1 / 1" } }
                                     />
                                 ) : (
                                     <Image
                                         src="/src/INF.png"
                                         w="100%"
-                                        style={{ aspectRatio: "1 / 1" }}
+                                        style={ { aspectRatio: "1 / 1" } }
                                     />
-                                )}
+                                ) }
                                 <Stack gap="xs">
-                                    {loading ? (
+                                    { loading ? (
                                         <>
                                             <Skeleton
-                                                key={1}
+                                                key={ 1 }
                                                 radius="xl"
                                                 h="1.5rem"
                                                 w="100%"
                                             />
                                             <Skeleton
-                                                key={2}
+                                                key={ 2 }
                                                 radius="xl"
                                                 h="1.5rem"
                                                 w="100%"
                                             />
                                             <Skeleton
-                                                key={3}
+                                                key={ 3 }
                                                 radius="xl"
                                                 h="1.5rem"
                                                 w="100%"
                                             />
                                             <Skeleton
-                                                key={4}
+                                                key={ 4 }
                                                 radius="xl"
                                                 h="1.5rem"
                                                 w="100%"
                                             />
                                             <Skeleton
-                                                key={5}
+                                                key={ 5 }
                                                 radius="xl"
                                                 h="1.5rem"
                                                 w="100%"
@@ -149,20 +150,20 @@ export default function RecipeDetail() {
                                             <Text>Serves: 6</Text>
                                             <Text>Meal Type: Dinner</Text>
                                         </>
-                                    )}
+                                    ) }
                                 </Stack>
                             </SimpleGrid>
                         </Accordion.Panel>
                     </Accordion.Item>
 
                     <Accordion.Item value="nutrition">
-                        <Accordion.Control disabled={loading}>
+                        <Accordion.Control disabled={ loading }>
                             Nutrition
                         </Accordion.Control>
                         <Accordion.Panel>
                             <Text size="sm" c="dimmed">/Per Serving</Text>
                             <Space h="md" />
-                            <SimpleGrid cols={{ base: 4, xs: 5, sm: 8 }} >
+                            <SimpleGrid cols={ { base: 4, xs: 5, sm: 8 } } >
                                 <Code>
                                     200
                                     <br />
@@ -208,7 +209,7 @@ export default function RecipeDetail() {
                     </Accordion.Item>
 
                     <Accordion.Item value="ingredients">
-                        <AccordionControl disabled={loading}>
+                        <AccordionControl disabled={ loading }>
                             Ingredients
                         </AccordionControl>
                         <Accordion.Panel>
@@ -239,7 +240,7 @@ export default function RecipeDetail() {
                     </Accordion.Item>
 
                     <Accordion.Item value="instructions">
-                        <Accordion.Control disabled={loading}>
+                        <Accordion.Control disabled={ loading }>
                             Instructions
                         </Accordion.Control>
                         <Accordion.Panel>

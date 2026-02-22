@@ -1,0 +1,13 @@
+.scrollbar {
+    &[data-orientation="vertical"] {
+        background-color: transparent !important;
+    }
+}
+
+.thumb {
+    background-color: #ff6b9d !important;
+
+    &:hover {
+        background-color: #ff4d88 !important;
+    }
+}

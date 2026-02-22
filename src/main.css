@@ -1,0 +1,28 @@
+.mantine-MultiSelect-value,
+.mantine-Pill-root {
+    background-color: #ff6b9d !important;
+    color: white !important;
+}
+
+.mantine-MultiSelect-value button,
+.mantine-Pill-remove {
+    color: white !important;
+}
+
+.mantine-MultiSelect-value button:hover,
+.mantine-Pill-remove:hover {
+    background-color: #ff4d88 !important;
+}
+
+.mantine-MultiSelect-item[data-selected],
+.mantine-Combobox-option[data-selected],
+.mantine-Combobox-option[data-selected]:hover {
+    background-color: #ff6b9d !important;
+    color: white !important;
+}
+
+.mantine-MultiSelect-item:hover,
+.mantine-Combobox-option:hover {
+    background-color: #ffbcd2 !important;
+    color: black !important;
+}

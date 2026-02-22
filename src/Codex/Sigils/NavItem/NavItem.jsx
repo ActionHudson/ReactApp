@@ -2,6 +2,7 @@ import { Stack } from "@mantine/core";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
+import { Colours } from "../../ArcaneThreads/Colours";
 import Icon from "../../Runes/Icon/Icon";
 import Text from "../../Runes/Text/Text";
 
@@ -27,7 +28,7 @@ export default function NavItem ({
             <Stack
                 justify="center"
                 align="center"
-                style={ { color: active ? "red" : "black" } }
+                style={ { color: active ? Colours.accent.primary : Colours.primary } }
                 gap="xs"
                 { ...props }
             >

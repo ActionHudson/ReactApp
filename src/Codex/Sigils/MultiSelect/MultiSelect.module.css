@@ -1,0 +1,42 @@
+.section {
+    color: #ff6b9d !important;
+}
+
+.section svg {
+    color: #ff6b9d !important;
+}
+.groupLabel {
+    color: #ff6b9d !important;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.groupLabel::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #ff6b9d !important;
+    margin-left: 10px;
+}
+
+.pill {
+    background-color: #ff6b9d !important;
+    color: white !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    height: 24px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.pillLabel {
+    color: white !important;
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    margin-top: 1px;
+}
