@@ -99,6 +99,7 @@ export default function RecipeDetail () {
                                         src="/src/INF.png"
                                         w="100%"
                                         style={ { aspectRatio: "1 / 1" } }
+                                        fallbackSrc="/INF.png"
                                     />
                                 ) }
                                 <Stack gap="xs">

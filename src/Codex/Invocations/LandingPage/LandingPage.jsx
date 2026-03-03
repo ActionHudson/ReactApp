@@ -1,7 +1,7 @@
-import { Button, Center, Loader, Stack, Text } from '@mantine/core';
+import { Button, Stack } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { useEffect, useState } from 'react';
 
+import { notify } from '../../ArcaneThreads/Notify';
 import { MainLayout } from '../../Grimoires/MainLayout/Mainlayout';
 import Icon from '../../Runes/Icon/Icon';
 
@@ -9,26 +9,24 @@ export default function LandingPage () {
 
     return (
         <MainLayout>
-            <Stack gap="md">
+            { /* <Stack gap="md">
 
-                { /* <Button
-                    onClick={ () => notifications.show({ 
-                    message: 'I will cloawdse in 4 seconds' 
-                    }) }
+                <Button
+                    onClick={ () => notify.success('Saved!', 'Your changes have been saved.') }
                 >
                     Notifications Provider timeout
                 </Button>
 
                 <Button
-                    onClick={ () => notifications.show({
-                        color: 'blue',
-                        title: 'I will never close',
-
-                        // message: 'unless yoawdawdu click X',
-                        autoClose: false
-                    }) }
+                    onClick={ () => notify.error('Error!', 'An error occurred while saving your changes.') }
                 >
-                    Never closes automatically
+                    Show error notification
+                </Button>
+
+                <Button
+                    onClick={ () => notify.info('Info', 'This is an informational message.') }
+                >
+                    Show info notification
                 </Button>
                 <Button
                     onClick={ () => {
@@ -55,8 +53,8 @@ export default function LandingPage () {
                     } }
                 >
                     Show update notification
-                </Button> */ }
-            </Stack>
+                </Button>
+            </Stack> */ }
         </MainLayout>
     );
 }

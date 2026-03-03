@@ -84,3 +84,29 @@ SimpleGridControl.propTypes = {
         icon: PropTypes.string.isRequired
     })).isRequired
 };
+
+// const gridConfig = {
+//     1: { cols: 1, icon: 'IconColumns1Filled' },
+//     2: { cols: 2, icon: 'IconColumns2Filled' },
+//     3: { cols: 3, icon: 'IconColumns3Filled' }
+// };
+
+// useEffect(() => {
+//     localStorage.setItem('activeCol', activeCol);
+//     const config = cardConfig[activeCol];
+//     if (config) {
+//         setCardTextHeight(config.cardTextHeight);
+//         setLineClamp(config.lineClamp);
+//     }
+// }, [activeCol]);
+
+// <Affix position={ { bottom: '90px', right: '2vw' } }>
+//     <SimpleGridControl
+//         opened={ opened }
+//         setOpened={ setOpened }
+//         activeCol={ activeCol }
+//         setActiveCol={ setActiveCol }
+//         activeColIcon={ gridConfig[activeCol]?.icon || '' }
+//         gridConfig={ gridConfig }
+//     />
+// </Affix> */

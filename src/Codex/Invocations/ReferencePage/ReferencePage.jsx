@@ -1,4 +1,4 @@
-import { Button, Code, Group, Stack, Tabs } from '@mantine/core';
+import { ActionIcon, Button, Code, Group, Stack, Tabs } from '@mantine/core';
 import sortBy from 'lodash/sortBy';
 import { DataTable } from 'mantine-datatable';
 import { useMemo, useState } from 'react';
@@ -261,9 +261,32 @@ export default function ReferencePage () {
                                     color="#FF6B9D"
                                     size="md"
                                     disabled={ selected.length === 0 && !sortStatus.columnAccessor }
-                                    radius="xl">
+                                    radius="xl"
+                                    visibleFrom='sm'
+                                >
                                     Clear Sort & Filter
                                 </Button>
+                                <ActionIcon
+                                    className={ Bclasses.button }
+                                    variant="outline"
+                                    size="lg"
+                                    disabled={ selected.length === 0 && !sortStatus.columnAccessor }
+                                    hiddenFrom='sm'
+                                    color="#FF6B9D"
+                                    onClick={ () => {
+                                        setSelected([]);
+                                        setSortStatus({
+                                            columnAccessor: '',
+                                            direction: 'asc'
+                                        });
+                                    } }
+                                >
+                                    <Icon
+                                        icon="IconArrowsSort"
+                                        size={ 2 }
+
+                                    />
+                                </ActionIcon>
                             </Group>
                             <div style={ { flex: 1, minHeight: 0 } }>
                                 <DataTable

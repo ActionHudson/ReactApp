@@ -15,8 +15,8 @@ export const Colours = {
 
     status: {
         success: "#27B635",
-        warning: "#FF6900",
         info: "#00A1FF",
-        danger: "#D70932"
+        warning: "#FF6900",
+        error: "#D70932"
     }
 };
