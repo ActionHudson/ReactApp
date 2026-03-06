@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import { MainLayout } from './Codex/Grimoires/MainLayout/Mainlayout';
+import DevPage from './Codex/Invocations/DevPage/DevPage';
 import LandingPage from './Codex/Invocations/LandingPage/LandingPage';
 import PlantChart from './Codex/Invocations/PlantChart/PlantChart';
 import RecipeDetail from './Codex/Invocations/RecipeDetail/RecipeDetail';
@@ -32,6 +33,10 @@ export const router = createBrowserRouter(
                 {
                     path: '/plantChart',
                     element: <PlantChart />
+                },
+                {
+                    path: '/DevPage',
+                    element: <DevPage />
                 }
             ]
         }

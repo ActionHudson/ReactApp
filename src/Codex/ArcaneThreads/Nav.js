@@ -24,5 +24,10 @@ export const Nav = [
         icon: "IconSeedling",
         label: "Plant Chart",
         path: "/PlantChart"
+    },
+    {
+        icon: "IconFlask",
+        label: "Dev Area",
+        path: "/DevPage"
     }
 ];
