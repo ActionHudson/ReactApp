@@ -1,4 +1,4 @@
-name: Deploy to IONOS
+name: Deploy to IONOS via SFTP
 on:
     push:
         branches:
@@ -18,11 +18,13 @@ jobs:
               run: |
                   npm install
                   npm run build
-            - name: Sync to IONOS
-              uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+            - name: Sync to IONOS via SFTP
+              uses: wlixcc/SFTP-Deploy-Action@v1.2.4
               with:
-                  server: ${{ secrets.FTP_SERVER }}
                   username: ${{ secrets.FTP_USERNAME }}
                   password: ${{ secrets.FTP_PASSWORD }}
-                  local-dir: ./dist/
-                  server-dir: /
+                  server: ${{ secrets.FTP_SERVER }}
+                  port: 22
+                  local_path: "./dist/*"
+                  remote_path: "/"
+                  delete_remote_files: false
