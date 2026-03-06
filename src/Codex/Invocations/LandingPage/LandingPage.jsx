@@ -1,10 +1,21 @@
 import { Button, Stack } from '@mantine/core';
+import { useEffect, useState } from 'react';
 
 import { notify } from '../../ArcaneThreads/Notify';
 
 // import Icon from '../../Runes/Icon/Icon';
 
 export default function LandingPage () {
+    const [ items, setItems ] = useState([]);
+
+    useEffect(() => {
+        fetch('/api/fetchAll.php?recipes')
+            .then(res => res.json())
+            .then(data => setItems(data))
+            .catch(err => console.error("Fetch error:", err));
+    }, []);
+
+    console.log(items);
 
     return (
 
