@@ -6,7 +6,14 @@
     background-color: #ff4d88 !important;
 }
 
-.custom-table-scroll .mantine-ScrollArea-scrollbar {
+.custom-table-scroll .mantine-ScrollArea-scrollbar[data-orientation="vertical"] {
     width: 9px !important;
+}
+
+.custom-table-scroll .mantine-ScrollArea-scrollbar[data-orientation="horizontal"] {
+    height: 9px !important;
+}
+
+.custom-table-scroll .mantine-ScrollArea-scrollbar {
     background-color: transparent !important;
 }
