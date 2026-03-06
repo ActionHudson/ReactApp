@@ -9,7 +9,7 @@ export default function LandingPage () {
     const [ items, setItems ] = useState([]);
 
     useEffect(() => {
-        fetch('/api/fetchAll.php?recipes')
+        fetch('/api/fetchAll.php?table=recipes')
             .then(res => res.json())
             .then(data => setItems(data))
             .catch(err => console.error("Fetch error:", err));
