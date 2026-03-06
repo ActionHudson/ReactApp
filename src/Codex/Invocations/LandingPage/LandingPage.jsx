@@ -1,9 +1,7 @@
-import { Button, Stack } from '@mantine/core';
+import { Button, Card, Group, Image, SimpleGrid, Stack, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
 import { notify } from '../../ArcaneThreads/Notify';
-
-// import Icon from '../../Runes/Icon/Icon';
 
 export default function LandingPage () {
     const [ items, setItems ] = useState([]);
@@ -11,64 +9,52 @@ export default function LandingPage () {
     useEffect(() => {
         fetch('/api/fetchAll.php?table=recipes')
             .then(res => res.json())
-            .then(data => setItems(data))
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setItems(data);
+                }
+            })
             .catch(err => console.error("Fetch error:", err));
     }, []);
 
-    console.log(items);
-
     return (
+        <Stack gap="xl" p="md">
 
-        <Stack gap="md">
+            <Group justify="center" gap="sm">
+                <Button variant="light" color="teal" onClick={ () => notify.success('Saved!') }>
+                    Success
+                </Button>
+                <Button variant="light" color="red" onClick={ () => notify.error('Error!', 'Failed to save.') }>
+                    Error
+                </Button>
+                <Button variant="light" color="blue" onClick={ () => notify.info('Info', 'Important update.') }>
+                    Info
+                </Button>
+                <Button variant="light" color="orange" onClick={ () => notify.warning('Warning!', 'Check this.') }>
+                    Warning
+                </Button>
+            </Group>
 
-            <Button
-                onClick={ () => notify.success('Saved!') }
-            >
-                Show success notification
-            </Button>
+            <hr style={ { width: '100%', opacity: 0.2 } } />
 
-            <Button
-                onClick={ () => notify.error('Error!', 'An error occurred while saving your changes.') }
-            >
-                Show error notification
-            </Button>
+            <SimpleGrid cols={ { base: 1, sm: 2, lg: 4 } } spacing="lg">
+                { items.map((recipe, index) => (
+                    <Card key={ recipe.id || index } shadow="sm" padding="xs" radius="md" withBorder>
+                        <Card.Section>
+                            <Image
+                                src={ `/data/recipeImages/${ recipe.image_filename }` }
+                                height={ 120 }
+                                alt={ recipe.title }
+                                fallbackSrc="https://placehold.co/200x120?text=No+Image"
+                            />
+                        </Card.Section>
+                        <Text fw={ 500 } size="sm" mt="sm" ta="center" truncate="end">
+                            { recipe.title || "Untitled" }
+                        </Text>
+                    </Card>
+                )) }
+            </SimpleGrid>
 
-            <Button
-                onClick={ () => notify.info('Info', 'This is an informational message.') }
-            >
-                Show info notification
-            </Button>
-            <Button
-                onClick={ () => notify.warning('Warning!', 'This is a warning message.') }
-            >
-                Show warning notification
-            </Button>
-            { /* <Button
-                    onClick={ () => {
-                        const id = notifications.show({
-                            loading: true,
-                            title: 'Loading your data',
-                            message: 'Data will be loaded in 3 seconds, you cannot close this yet',
-                            autoClose: false,
-                            withCloseButton: false
-                        });
-
-                        setTimeout(() => {
-                            notifications.update({
-                                id,
-                                color: 'teal',
-
-                                // title: 'Data was loaded',
-                                message: 'Notification will close in 2 seconds, you can close this notification now',
-                                icon: <Icon size={ 18 } />,
-                                loading: false,
-                                autoClose: 2000
-                            });
-                        }, 3000);
-                    } }
-                >
-                    Show update notification
-                </Button> */ }
         </Stack>
     );
 }
