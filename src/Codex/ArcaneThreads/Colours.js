@@ -1,6 +1,7 @@
 export const Colours = {
     primary: "#0F1A20",
     muted: "#364148",
+    disabled: "#868e96",
 
     secondary: "#FFFFFF",
 

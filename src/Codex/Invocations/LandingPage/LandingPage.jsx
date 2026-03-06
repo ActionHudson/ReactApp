@@ -1,34 +1,38 @@
 import { Button, Stack } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
 
 import { notify } from '../../ArcaneThreads/Notify';
-import { MainLayout } from '../../Grimoires/MainLayout/Mainlayout';
-import Icon from '../../Runes/Icon/Icon';
+
+// import Icon from '../../Runes/Icon/Icon';
 
 export default function LandingPage () {
 
     return (
-        <MainLayout>
-            { /* <Stack gap="md">
 
-                <Button
-                    onClick={ () => notify.success('Saved!', 'Your changes have been saved.') }
-                >
-                    Notifications Provider timeout
-                </Button>
+        <Stack gap="md">
 
-                <Button
-                    onClick={ () => notify.error('Error!', 'An error occurred while saving your changes.') }
-                >
-                    Show error notification
-                </Button>
+            <Button
+                onClick={ () => notify.success('Saved!') }
+            >
+                Show success notification
+            </Button>
 
-                <Button
-                    onClick={ () => notify.info('Info', 'This is an informational message.') }
-                >
-                    Show info notification
-                </Button>
-                <Button
+            <Button
+                onClick={ () => notify.error('Error!', 'An error occurred while saving your changes.') }
+            >
+                Show error notification
+            </Button>
+
+            <Button
+                onClick={ () => notify.info('Info', 'This is an informational message.') }
+            >
+                Show info notification
+            </Button>
+            <Button
+                onClick={ () => notify.warning('Warning!', 'This is a warning message.') }
+            >
+                Show warning notification
+            </Button>
+            { /* <Button
                     onClick={ () => {
                         const id = notifications.show({
                             loading: true,
@@ -53,8 +57,7 @@ export default function LandingPage () {
                     } }
                 >
                     Show update notification
-                </Button>
-            </Stack> */ }
-        </MainLayout>
+                </Button> */ }
+        </Stack>
     );
 }

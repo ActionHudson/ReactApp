@@ -13,6 +13,11 @@ const preview = {
                 color: /(background|color)$/i,
                 date: /Date$/i
             }
+        },
+        options: {
+            storySort: {
+                order: [ 'Welcome', 'Components', [ 'Runes', 'Sigils', '*' ] ]
+            }
         }
     }
 };

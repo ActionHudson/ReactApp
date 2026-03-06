@@ -1,13 +1,16 @@
 import { AppShell, Container } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
+import { Colours } from '../../ArcaneThreads/Colours';
 import { Nav } from '../../ArcaneThreads/Nav';
+import { Spacing } from '../../ArcaneThreads/Sizes';
 import NavBar from '../../Enchantments/NavBar/NavBar';
 
-export const MainLayout = ({ children }) => {
+export const MainLayout = () => {
+
     const location = useLocation();
+
     const navlinksWithActive = (Nav || []).map(link => {
         const linkPath = link.path || link.link || '';
 
@@ -16,10 +19,12 @@ export const MainLayout = ({ children }) => {
             active: location.pathname === linkPath || location.pathname.startsWith(`${ linkPath }/`)
         };
     });
+
     const isLarge = useMediaQuery('(min-width: 1200px)');
+
     return (
         <AppShell
-            padding={ 0 }
+            padding={ Spacing.none }
             header={ {
                 height: 80,
                 collapsed: !isLarge,
@@ -35,14 +40,14 @@ export const MainLayout = ({ children }) => {
                 <NavBar navlinks={ navlinksWithActive } />
             </AppShell.Header>
 
-            <AppShell.Main bg="#E4E4E4" h="100vh">
+            <AppShell.Main bg={ Colours.background } h="100vh">
                 <Container
                     fluid
-                    p={ 16 }
+                    p={ Spacing.md }
                     h="100%"
                     style={ { overflowY: 'auto', overflowX: 'hidden' } }
                 >
-                    { children }
+                    <Outlet />
                 </Container>
             </AppShell.Main>
 
@@ -51,14 +56,4 @@ export const MainLayout = ({ children }) => {
             </AppShell.Footer>
         </AppShell>
     );
-};
-
-MainLayout.propTypes = {
-    children: PropTypes.node.isRequired,
-    navlinks: PropTypes.arrayOf(PropTypes.shape({
-        icon: PropTypes.string,
-        label: PropTypes.string,
-        path: PropTypes.string,
-        link: PropTypes.string
-    })).isRequired
 };

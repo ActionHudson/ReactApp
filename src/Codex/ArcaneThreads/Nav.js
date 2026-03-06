@@ -18,5 +18,11 @@ export const Nav = [
     },
     { icon: "IconListSearch",
         label: "Reference",
-        path: "/reference" }
+        path: "/reference"
+    },
+    {
+        icon: "IconSeedling",
+        label: "Plant Chart",
+        path: "/PlantChart"
+    }
 ];

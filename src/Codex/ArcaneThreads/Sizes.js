@@ -10,10 +10,12 @@ export const FontSize = {
 export const FontWeight = {
     normal: '400',
     semibold: '500',
-    bold: '600'
+    bold: '600',
+    extrabold: '700'
 };
 
-export const Padding = {
+export const Spacing = {
+    none: '0',
     xs: '0.25rem',  // 4px
     sm: '0.5rem',   // 8px
     md: '1rem',     // 16px

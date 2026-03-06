@@ -1,7 +1,21 @@
-import { SimpleGrid } from '@mantine/core';
 import PropTypes from 'prop-types';
 
+import SimpleGrid from '../../Runes/SimpleGrid/SimpleGrid';
 import NavItem from '../../Sigils/NavItem/NavItem';
+
+/**
+ * Renders a horizontal navigation bar dynamically populated by an array of link objects.
+ * @example
+ * const links = [{ icon: "home", label: "Home", path: "/", active: true }];
+ * <NavBar navlinks={links} />
+ * @param {Object} props
+ * @param {Array<Object>} props.navlinks
+ * @param {string} props.navlinks[].icon
+ * @param {string} props.navlinks[].label
+ * @param {string} props.navlinks[].path
+ * @param {boolean} [props.navlinks[].active=false]
+ * @param {boolean} [props.navlinks[].disabled=false]
+ */
 
 export default function NavBar ({ navlinks }) {
     return (

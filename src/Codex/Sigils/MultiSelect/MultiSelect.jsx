@@ -13,7 +13,6 @@ export default function MultiSelect ({
         <MantineMultiSelect
             data={ data }
             searchable
-            clearable
             nothingFoundMessage="Nothing found..."
             hidePickedOptions
             maxDropdownHeight={ 400 }
@@ -26,7 +25,6 @@ export default function MultiSelect ({
             value={ selected }
             { ...props }
         />
-
     );
 }
 
