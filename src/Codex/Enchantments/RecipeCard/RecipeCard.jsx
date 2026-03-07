@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Skeleton } from '@mantine/core';
+import { AspectRatio, Box, Flex, Image, Skeleton } from '@mantine/core';
 import PropTypes from 'prop-types';
 
 import Card from '../../Runes/Card/Card';
@@ -10,7 +10,8 @@ export function RecipeCard ({
     recipeTitle,
     isBookmarked,
     loading = false,
-    handleBookmarkToggle = undefined
+    handleBookmarkToggle = undefined,
+    recipeImage = "/INF.png"
 }) {
     const boxContainerStyle = {
         flex: 1,
@@ -25,52 +26,46 @@ export function RecipeCard ({
             component="a"
             href={ `${ window.location.pathname }/${ recipeId }` }
             shadow="sm"
+            padding={ 0 }
+            style={ { overflow: 'hidden' } }
         >
-            <Flex direction={ { base: 'row', sm: 'column' } } m="-md">
-                <Skeleton
-                    visible={ loading }
-                    w={ { base: '30%', sm: '100%' } }
-                    h="100%"
-                    radius={ 0 }
-                >
-                    <Box w="100%" h="100%" pos="relative">
-                        <Image
-                            src="/INF.png"
-                            h="100%"
-                            w="100%"
-                            fit="cover"
-                            fallbackSrc="/INF.png"
-                        />
-                    </Box>
-                </Skeleton>
+            <Flex direction={ { base: 'row', sm: 'column' } }>
+                <Box w={ { base: '30%', sm: '100%' } } pos="relative">
+                    <Skeleton visible={ loading } radius={ 0 }>
+                        <AspectRatio ratio={ 4 / 3 }>
+                            <Image
+                                src={ recipeImage }
+                                fit="cover"
+                                alt={ recipeTitle }
+                                fallbackSrc="/INF.png"
+                            />
+                        </AspectRatio>
+                    </Skeleton>
 
-                <Box style={ boxContainerStyle }>
                     <ActionIcon
-                        variant={ isBookmarked ? 'filled' : 'outline' }
+                        variant="filled"
                         id={ recipeId }
-                        onClick={ handleBookmarkToggle }
+                        onClick={ e => handleBookmarkToggle(e, recipeId) }
                         pos="absolute"
                         radius="xl"
                         top={ 5 }
                         right={ 5 }
                         style={ { zIndex: 1 } }
-                        icon={
-                            isBookmarked ? "IconBookmarkFilled" : "IconBookmark"
-                        }
+                        icon={ isBookmarked ? "IconBookmarkFilled" : "IconBookmark" }
                     />
+                </Box>
 
+                <Box style={ boxContainerStyle }>
                     { loading ? (
-                        <Box mb="sm">
+                        <Box>
                             <Skeleton h={ 15 } w="100%" radius="sm" />
                             <Skeleton h={ 15 } mt={ 4 } w="100%" radius="sm" />
                             <Skeleton h={ 15 } mt={ 4 } w="80%" radius="sm" />
                         </Box>
                     ) : (
-                        <>
-                            <Text fw={ 800 } size="md" lineClamp={ 3 }>
-                                { recipeTitle }
-                            </Text>
-                        </>
+                        <Text fw={ 800 } size="md" lineClamp={ 2 }>
+                            { recipeTitle }
+                        </Text>
                     ) }
                 </Box>
             </Flex>
@@ -83,5 +78,6 @@ RecipeCard.propTypes = {
     recipeTitle: PropTypes.string.isRequired,
     isBookmarked: PropTypes.bool.isRequired,
     loading: PropTypes.bool,
-    handleBookmarkToggle: PropTypes.func
+    handleBookmarkToggle: PropTypes.func,
+    recipeImage: PropTypes.string
 };

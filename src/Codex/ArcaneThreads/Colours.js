@@ -8,7 +8,8 @@ export const Colours = {
     accent: {
         primary: "#FF6B9D",
         primaryHover: "#D7467B",
-        secondary: "#F18F01"
+        secondary: "#F18F01",
+        secondaryHover: "#D07D01"
     },
     status: {
         success: "#27B635",
