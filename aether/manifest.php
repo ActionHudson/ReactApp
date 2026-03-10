@@ -10,7 +10,7 @@ if (!is_array($config)) {
     exit;
 }
 
-$allowedTables = ['recipes', 'references'];
+$allowedTables = ['recipes', 'references', 'plants'];
 $table = $_GET['table'] ?? '';
 
 if (!in_array($table, $allowedTables)) {
@@ -35,7 +35,7 @@ try {
 
     $pdo = new PDO($dsn, $user, $pass, $options);
 
-    $stmt = $pdo->prepare("SELECT * FROM `$table` LIMIT 100");
+    $stmt = $pdo->prepare("SELECT * FROM `$table`");
     $stmt->execute();
 
     echo json_encode($stmt->fetchAll());

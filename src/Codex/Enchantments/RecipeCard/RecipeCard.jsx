@@ -9,7 +9,6 @@ export function RecipeCard ({
     recipeId,
     recipeTitle,
     isBookmarked,
-    loading = false,
     handleBookmarkToggle = undefined,
     recipeImage = "/INF.png"
 }) {
@@ -31,17 +30,14 @@ export function RecipeCard ({
         >
             <Flex direction={ { base: 'row', sm: 'column' } }>
                 <Box w={ { base: '30%', sm: '100%' } } pos="relative">
-                    <Skeleton visible={ loading } radius={ 0 }>
-                        <AspectRatio ratio={ 4 / 3 }>
-                            <Image
-                                src={ recipeImage }
-                                fit="cover"
-                                alt={ recipeTitle }
-                                fallbackSrc="/INF.png"
-                            />
-                        </AspectRatio>
-                    </Skeleton>
-
+                    <AspectRatio ratio={ 4 / 3 }>
+                        <Image
+                            src={ recipeImage }
+                            fit="cover"
+                            alt={ recipeTitle }
+                            fallbackSrc="/INF.png"
+                        />
+                    </AspectRatio>
                     <ActionIcon
                         variant="filled"
                         id={ recipeId }
@@ -56,17 +52,9 @@ export function RecipeCard ({
                 </Box>
 
                 <Box style={ boxContainerStyle }>
-                    { loading ? (
-                        <Box>
-                            <Skeleton h={ 15 } w="100%" radius="sm" />
-                            <Skeleton h={ 15 } mt={ 4 } w="100%" radius="sm" />
-                            <Skeleton h={ 15 } mt={ 4 } w="80%" radius="sm" />
-                        </Box>
-                    ) : (
-                        <Text fw={ 800 } size="md" lineClamp={ 2 }>
-                            { recipeTitle }
-                        </Text>
-                    ) }
+                    <Text fw={ 800 } size="md" lineClamp={ 2 } lh={ 1.4 }>
+                        { recipeTitle }
+                    </Text>
                 </Box>
             </Flex>
         </Card>

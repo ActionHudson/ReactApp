@@ -1,18 +1,62 @@
 import {
     Accordion, ActionIcon, Center, Code, Image,
-    List, SimpleGrid, Skeleton, Space, Stack, Text, Title
+    List, LoadingOverlay, SimpleGrid, Skeleton, Space, Stack, Text, Title
 } from '@mantine/core';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
+import { Colours } from '../../ArcaneThreads/Colours';
+import { notify } from '../../ArcaneThreads/Notify';
 import Icon from '../../Runes/Icon/Icon';
 export default function RecipeDetail () {
+
+    const { id } = useParams();
+
+    const [ loading, setLoading ] = useState(true);
+    const [ item, setItem ] = useState(null);
+
+    useEffect(() => {
+        setLoading(true);
+
+        fetch(`/aether/scry.php?table=recipes&id=${ id }`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data && !data.error) {
+                    setItem(data);
+
+                    if (!data.image_filename) {
+                        setLoading(false);
+                        return;
+                    }
+
+                    const img = new window.Image();
+                    img.src = `/data/recipeImages/${ data.image_filename }`;
+                    img.onload = () => setLoading(false);
+                    img.onerror = () => setLoading(false);
+                } else {
+                    setLoading(false);
+                }
+            })
+            .catch(err => {
+                notify.error('Error!', 'Failed to connect to database.');
+                console.error("Fetch error:", err);
+                setLoading(false);
+            });
+    }, [id]);
+
+    console.log('Fetched item:', item);
+
     const [
         ingredientMultiplier,
         setIngredientMultiplier
     ] = useState({ multiplier: 1, icon: 'IconMultiplier1x' });
 
-    const [ loading, setLoading ] = useState(true);
     useEffect(() => {
         const timer = setTimeout(() => {
             setLoading(false);
@@ -70,13 +114,38 @@ export default function RecipeDetail () {
 
     return (
         <Stack
-            gap="md"
+            gap={ 0 }
             style={ {
                 backgroundColor: 'white',
                 padding: '1rem',
                 borderRadius: '0.5rem',
-                marginBottom: '5rem'
-            } }>
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                minHeight: 0,
+                height: '100%',
+                position: 'relative'
+            } }
+        >
+            <LoadingOverlay
+                visible={ loading }
+                zIndex={ 1000 }
+                overlayProps={ {
+                    radius: "sm",
+                    blur: 1
+                } }
+                loaderProps={ {
+                    size: 200,
+                    color: Colours.accent.primary,
+                    type: 'oval'
+                } }
+                style={ {
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: 0
+                } }
+            />
             <Title order={ 1 }>Recipe Title Would Go Here !</Title>
             <Accordion variant="separated" radius="md" multiple defaultValue={ ['overview'] } chevronPosition="left">
                 <Accordion.Item value="overview">

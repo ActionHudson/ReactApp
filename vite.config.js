@@ -6,7 +6,28 @@ export default defineConfig({
     publicDir: 'public',
     base: "/",
     server: {
-        port: 3000
+        port: 3000,
+        proxy: {
+            '/aether/manifest.php': {
+                target: 'http://localhost:5000',
+                changeOrigin: true,
+                rewrite: path => {
+                    const url = new URL(path, 'http://localhost:5000');
+                    const table = url.searchParams.get('table');
+                    return `/${ table }`;
+                }
+            },
+            '/aether/scry.php': {
+                target: 'http://localhost:5000',
+                changeOrigin: true,
+                rewrite: path => {
+                    const url = new URL(path, 'http://localhost:5000');
+                    const table = url.searchParams.get('table');
+                    const id = url.searchParams.get('id');
+                    return id ? `/${ table }/${ id }` : `/${ table }`;
+                }
+            }
+        }
     },
     test: {
         globals: true,
