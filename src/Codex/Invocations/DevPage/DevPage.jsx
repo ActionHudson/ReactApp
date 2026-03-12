@@ -1,15 +1,17 @@
 import { Button, Group, JsonInput, NumberInput, Select, Stack, Title } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
+import { notify } from '../../ArcaneThreads/Notify';
+
 export default function DevPage () {
-    const [ id, setId ] = useState(1);
+    const [ id, setId ] = useState(0);
     const [ field, setField ] = useState('ingredients');
     const [ jsonContent, setJsonContent ] = useState('');
     const [ loading, setLoading ] = useState(false);
     const [ saving, setSaving ] = useState(false);
 
     useEffect(() => {
-        if (!id) { return; }
+        if (id === null || id === undefined) { return; }
         setLoading(true);
 
         fetch(`/aether/scry.php?table=recipes&id=${ id }`)
@@ -32,35 +34,23 @@ export default function DevPage () {
     const handleSave = async () => {
         setSaving(true);
         try {
-            let parsedData;
-            try {
-                parsedData = JSON.parse(jsonContent);
-            } catch (e) {
-                console.error("Invalid JSON format");
-                return;
-            }
-
             const payload = {
-                [field]: parsedData
+                table: 'recipes',
+                id: id,
+                [field]: JSON.parse(jsonContent)
             };
 
             const res = await fetch(`/aether/update.php?table=recipes&id=${ id }`, {
-                method: 'PATCH',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            if (!res.ok) {
-                const errorText = await res.text();
-                throw new Error(`Server responded with ${ res.status }: ${ errorText }`);
-            }
-
-            const result = await res.json();
-            alert('Saved successfully');
-
+            if (!res.ok) { throw new Error(`Status: ${ res.status }`); }
+            notify.success('Database updated successfully!');
         } catch (err) {
-            console.error("Save error:", err);
-            alert(`Save failed: ${ err.message }`);
+
+            notify.error('Failed to update database.', err);
         } finally {
             setSaving(false);
         }
@@ -84,7 +74,7 @@ export default function DevPage () {
                     label="Recipe ID"
                     value={ id }
                     onChange={ val => setId(Number(val)) }
-                    min={ 1 }
+                    min={ 0 }
                 />
                 <Select
                     label="Field to Edit"

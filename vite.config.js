@@ -30,11 +30,20 @@ export default defineConfig({
             '/aether/update.php': {
                 target: 'http://localhost:5000',
                 changeOrigin: true,
+                configure: proxy => {
+                    proxy.on('proxyReq', proxyReq => {
+                        proxyReq.method = 'PATCH';
+                    });
+                },
                 rewrite: path => {
                     const url = new URL(path, 'http://localhost:5000');
                     const table = url.searchParams.get('table');
                     const id = url.searchParams.get('id');
-                    return `/${ table }/${ id }`;
+                    if (table && id !== null) {
+                        return `/${ table }/${ id }`;
+                    }
+
+                    return path;
                 }
             }
         }

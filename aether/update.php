@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $config = require(__DIR__ . '/../config.php');
 $input = json_decode(file_get_contents("php://input"), true);
 
-if (!$input || !isset($input['table']) || !isset($input['id']) || !isset($input['data']) || !is_array($input['data'])) {
+if (!$input || !isset($input['table']) || !isset($input['id']) || ($input['id'] === '' && $input['id'] !== 0)) {
     http_response_code(400);
-    echo json_encode(["error" => "Invalid request format. Must include table, id, and data."]);
+    echo json_encode(["error" => "Missing table or id"]);
     exit;
 }
 
@@ -33,15 +33,15 @@ try {
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
 
-    $data = $input['data'];
-    $columns = array_keys($data);
-
     $setSegments = [];
     $values = [];
 
-    foreach ($columns as $column) {
+    foreach ($input as $column => $val) {
+        if ($column === 'table' || $column === 'id') {
+            continue;
+        }
+
         $setSegments[] = "`$column` = ?";
-        $val = $data[$column];
 
         if (is_array($val)) {
             $values[] = json_encode($val);
@@ -50,8 +50,12 @@ try {
         }
     }
 
-    $values[] = $id;
+    if (empty($setSegments)) {
+        echo json_encode(["success" => true, "message" => "No fields to update"]);
+        exit;
+    }
 
+    $values[] = $id;
     $setString = implode(", ", $setSegments);
     $sql = "UPDATE `$table` SET $setString WHERE `id` = ?";
 
@@ -66,26 +70,3 @@ try {
     http_response_code(500);
     echo json_encode(["error" => $e->getMessage()]);
 }
-
-// const payload = {
-//     table: 'plants',
-//     id: 1,
-//     data: {
-//         name: 'Updated Butternut Squash',
-//         plant_depth_mm: 30,
-//         schedule: {
-//             apr: "SAH",
-//             may: "SAH"
-//         }
-//     }
-// };
-
-// const res = await fetch('/aether/update.php', {
-//     method: 'POST',
-//     headers: {
-//         'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify(payload)
-// });
-
-// const result = await res.json();

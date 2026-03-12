@@ -36,7 +36,7 @@ try {
 
     $pdo = new PDO($dsn, $user, $pass, $options);
 
-    if ($id) {
+    if ($id !== null && $id !== '') {
         $stmt = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
         $stmt->execute([$id]);
         $result = $stmt->fetch();
@@ -57,10 +57,3 @@ try {
     http_response_code(500);
     echo json_encode(["error" => "Server connection error"]);
 }
-
-
-// const res2 = await fetch('/aether/scry.php?table=plants&id=3');
-// if (!res2.ok) {
-//     throw new Error('Network response was not ok');
-// }
-// alert(JSON.stringify(await res2.json()));
