@@ -4,6 +4,7 @@ import { MainLayout } from './Codex/Grimoires/MainLayout/Mainlayout';
 import DevPage from './Codex/Invocations/DevPage/DevPage';
 import LandingPage from './Codex/Invocations/LandingPage/LandingPage';
 import PlantChart from './Codex/Invocations/PlantChart/PlantChart';
+import RecipeAddPage from './Codex/Invocations/RecipeAdd/RecipeAdd';
 import RecipeDetail from './Codex/Invocations/RecipeDetail/RecipeDetail';
 import Recipes from './Codex/Invocations/Recipes/Recipes';
 import ReferencePage from './Codex/Invocations/ReferencePage/ReferencePage';
@@ -23,6 +24,7 @@ export const router = createBrowserRouter(
                     path: '/recipes',
                     children: [
                         { index: true, element: <Recipes /> },
+                        { path: 'add', element: <RecipeAddPage /> },
                         { path: ':id', element: <RecipeDetail /> }
                     ]
                 },

@@ -1,4 +1,4 @@
-import { AspectRatio, Box, Flex, Image, Skeleton } from '@mantine/core';
+import { AspectRatio, Box, Flex, Image } from '@mantine/core';
 import PropTypes from 'prop-types';
 
 import Card from '../../Runes/Card/Card';

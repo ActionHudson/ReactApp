@@ -12,9 +12,22 @@ export const MainLayout = () => {
 
     const navlinksWithActive = (Nav || []).map(link => {
         const linkPath = link.path || link.link || '';
+        const cleanLinkPath = linkPath.toLowerCase().replace(/\/$/, '');
+        const cleanCurrentPath = location.pathname.toLowerCase().replace(/\/$/, '');
+
+        let isActive = false;
+
+        if (cleanLinkPath === '' || cleanLinkPath === '/') {
+            isActive = cleanCurrentPath === '' || cleanCurrentPath === '/';
+        } else {
+            isActive = cleanCurrentPath === cleanLinkPath || cleanCurrentPath.startsWith(
+                `${ cleanLinkPath }/`
+            );
+        }
+
         return {
             ...link,
-            active: location.pathname === linkPath || location.pathname.startsWith(`${ linkPath }/`)
+            active: isActive
         };
     });
 

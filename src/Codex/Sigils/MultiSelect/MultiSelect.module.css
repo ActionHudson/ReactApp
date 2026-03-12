@@ -5,6 +5,7 @@
 .section svg {
     color: #ff6b9d !important;
 }
+
 .groupLabel {
     color: #ff6b9d !important;
     font-weight: 700;
@@ -13,6 +14,11 @@
     text-transform: uppercase;
     font-size: 14px;
     letter-spacing: 1px;
+}
+
+.option svg {
+    color: #ff6b9d !important;
+    opacity: 1 !important;
 }
 
 .groupLabel::after {
