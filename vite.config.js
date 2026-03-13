@@ -45,6 +45,18 @@ export default defineConfig({
 
                     return path;
                 }
+            },
+            '/aether/inscribe.php': {
+                target: 'http://localhost:5000',
+                changeOrigin: true,
+                rewrite: path => {
+                    const url = new URL(path, 'http://localhost:5000');
+                    const table = url.searchParams.get('table');
+                    if (table) {
+                        return `/${ table }`;
+                    }
+                    return path;
+                }
             }
         }
     },

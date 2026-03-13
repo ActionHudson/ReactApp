@@ -6,6 +6,7 @@ import { useForm } from '@mantine/form';
 import { useMemo, useState } from 'react';
 
 import { Colours } from '../../ArcaneThreads/Colours';
+import { notify } from '../../ArcaneThreads/Notify';
 import Icon from '../../Runes/Icon/Icon';
 import NIclasses from '../../Runes/NumberInput/NumberInput.module.css';
 import ScrollArea from '../../Runes/ScrollArea/ScrollArea';
@@ -37,6 +38,7 @@ const NUTRITION_FIELDS = [
 
 export default function RecipeAddPage () {
     const [ step, setStep ] = useState(0);
+    const [ submitting, setSubmitting ] = useState(false);
 
     const form = useForm({
         initialValues: {
@@ -53,33 +55,28 @@ export default function RecipeAddPage () {
             }
             if (step === 1) {
                 const errors = {};
-                const keys = [
-                    'kcal',
-                    'fat',
-                    'saturates',
-                    'carbs',
-                    'sugars',
-                    'fibre',
-                    'protein',
-                    'salt'
-                ];
-
+                const keys = [ 'kcal', 'fat', 'saturates', 'carbs', 'sugars', 'fibre', 'protein', 'salt' ];
                 keys.forEach(key => {
                     if (typeof values[key] !== 'number') {
                         errors[key] = true;
                     }
                 });
-
                 return errors;
             }
             if (step === 2) {
-                return {
-                    ingredients: !values.ingredients.trim()
-                        ? true
-                        : null };
+                return { ingredients: !values.ingredients.trim() ? true : null };
             }
             if (step === 3) {
                 return { method: !values.method.trim() ? true : null };
+            }
+            if (step === 5) {
+                if (values.notes.trim() !== '') {
+                    try {
+                        JSON.parse(values.notes);
+                    } catch (e) {
+                        return { notes: true };
+                    }
+                }
             }
             return {};
         }
@@ -93,54 +90,99 @@ export default function RecipeAddPage () {
 
     const prevStep = () => setStep(current => Math.max(current - 1, 0));
 
-    const handleSubmit = values => {
-        alert(JSON.stringify(values, null, 2));
+    const handleSubmit = async values => {
+        setSubmitting(true);
+        try {
+            const mappedData = {
+                recipe_name: values.recipeName,
+                recipe_type: values.recipeType,
+                source: values.source,
+                serves: values.serves,
+                prep_time: values.prepTime,
+                cook_time: values.cookTime,
+                kcal: values.kcal,
+                fat: values.fat,
+                saturates: values.saturates,
+                carbs: values.carbs,
+                sugars: values.sugars,
+                fibre: values.fibre,
+                protein: values.protein,
+                salt: values.salt,
+                rating: values.rating,
+                image_filename: values.imageFilename
+            };
+
+            [ 'ingredients', 'method', 'notes' ].forEach(key => {
+                if (values[key] && values[key].trim() !== '') {
+                    mappedData[key] = JSON.parse(values[key]);
+                } else {
+                    mappedData[key] = [];
+                }
+            });
+
+            const payload = {
+                table: 'recipes',
+                data: mappedData
+            };
+
+            const res = await fetch('/aether/inscribe.php?table=recipes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!res.ok) {
+                throw new Error(`Status: ${ res.status }`);
+            }
+
+            const result = await res.json();
+
+            if (result.error) {
+                throw new Error(result.error);
+            }
+
+            notify.success('Recipe added successfully!');
+            form.reset();
+            setStep(0);
+        } catch (err) {
+            notify.error('Failed to add recipe.', err.message);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     const progressValues = useMemo(() => [ 0, 1, 2, 3, 4, 5 ].map(index => {
-        if (step > index) {
-            return 100;
-        }
-        if (step < index) {
-            return 0;
-        }
+        if (step > index) { return 100; }
+        if (step < index) { return 0; }
         return form.isValid() ? 100 : 50;
     }), [ step, form ]);
 
     return (
-        <Stack style={
-            { backgroundColor: 'white',
-                padding: '1rem',
-                borderRadius: '0.5rem',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column' }
-        }>
+        <Stack style={ {
+            backgroundColor: 'white',
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+        } }>
             <ScrollArea>
                 <Box style={ { flex: 1 } }>
                     <form onSubmit={ form.onSubmit(handleSubmit) }>
                         { step === 0 && (
-                            <Fieldset legend="Basic Information">
+                            <Fieldset legend="Basic Information" disabled={ submitting }>
                                 <Stack gap="xs">
                                     <TextInput
                                         label="Recipe Name"
-                                        { ...form.getInputProps(
-                                            'recipeName'
-                                        ) }
-                                        styles={
-                                            form.errors.recipeName
-                                                ? errorInputStyles
-                                                : {}
-                                        }
+                                        { ...form.getInputProps('recipeName') }
+                                        styles={ form.errors.recipeName ? errorInputStyles : {} }
                                     />
                                     <Group grow align="flex-start">
                                         <Input.Wrapper label="Rating">
                                             <Rating
                                                 size="lg"
                                                 color={ Colours.accent.primary }
-                                                { ...form.getInputProps(
-                                                    'rating'
-                                                ) }
+                                                { ...form.getInputProps('rating') }
                                             />
                                         </Input.Wrapper>
                                         <Select
@@ -152,32 +194,12 @@ export default function RecipeAddPage () {
                                                 { value: 'dinner', label: 'Dinner' },
                                                 { value: 'other', label: 'Other' }
                                             ] }
-                                            { ...form.getInputProps(
-                                                'recipeType'
-                                            ) }
-                                            styles={
-                                                form.errors.recipeType
-                                                    ? errorInputStyles
-                                                    : {
-                                                        input: {
-                                                            textTransform: 'capitalize'
-                                                        }
-                                                    }
-                                            }
+                                            { ...form.getInputProps('recipeType') }
+                                            styles={ form.errors.recipeType ? errorInputStyles : { input: { textTransform: 'capitalize' } } }
                                             withAlignedLabels
-                                            classNames={
-                                                { section: MSclasses.section,
-                                                    option: MSclasses.option
-
-                                                }
-                                            }
+                                            classNames={ { section: MSclasses.section, option: MSclasses.option } }
                                             rightSectionPointerEvents="none"
-                                            rightSection={
-                                                <Icon
-                                                    icon="IconSelector"
-                                                    size={ 14 }
-                                                />
-                                            }
+                                            rightSection={ <Icon icon="IconSelector" size={ 14 } /> }
                                         />
                                     </Group>
                                     <TextInput
@@ -193,16 +215,8 @@ export default function RecipeAddPage () {
                                             mt="xs"
                                             mb="xs"
                                             thumbSize={ 32 }
-                                            marks={
-                                                [
-                                                    { value: 4, label: '4' },
-                                                    { value: 8, label: '8' }
-                                                ]
-                                            }
-                                            styles={
-                                                { markLabel: {
-                                                    marginTop: 8 } }
-                                            }
+                                            marks={ [ { value: 4, label: '4' }, { value: 8, label: '8' } ] }
+                                            styles={ { markLabel: { marginTop: 8 } } }
                                             { ...form.getInputProps('serves') }
                                         />
                                     </Input.Wrapper>
@@ -212,32 +226,19 @@ export default function RecipeAddPage () {
                                             min={ 0 }
                                             max={ 600 }
                                             allowDecimal={ false }
-                                            classNames={
-                                                { control: NIclasses.control }
-                                            }
-                                            { ...form.getInputProps(
-                                                'prepTime'
-                                            ) }
+                                            classNames={ { control: NIclasses.control } }
+                                            { ...form.getInputProps('prepTime') }
                                         />
                                         <NumberInput
                                             label="Cooking Time (mins)"
                                             min={ 0 }
                                             max={ 600 }
                                             allowDecimal={ false }
-                                            classNames={
-                                                { control: NIclasses.control }
-                                            }
-                                            { ...form.getInputProps(
-                                                'cookTime'
-                                            ) }
+                                            classNames={ { control: NIclasses.control } }
+                                            { ...form.getInputProps('cookTime') }
                                         />
                                     </Group>
-                                    <Button
-                                        mt="md"
-                                        variant="gradient"
-                                        gradient={ gradientProps }
-                                        onClick={ nextStep }
-                                    >
+                                    <Button mt="md" variant="gradient" gradient={ gradientProps } onClick={ nextStep }>
                                         Next Section
                                     </Button>
                                 </Stack>
@@ -245,14 +246,8 @@ export default function RecipeAddPage () {
                         ) }
 
                         { step === 1 && (
-                            <Fieldset legend="Nutritional Information">
-                                <Group
-                                    style={
-                                        {
-                                            display: 'grid',
-                                            gridTemplateColumns: '1fr 1fr',
-                                            gap: '1rem' }
-                                    }>
+                            <Fieldset legend="Nutritional Information" disabled={ submitting }>
+                                <Group style={ { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' } }>
                                     { NUTRITION_FIELDS.map(field => (
                                         <NumberInput
                                             key={ field.name }
@@ -260,44 +255,22 @@ export default function RecipeAddPage () {
                                             min={ 0 }
                                             max={ 9999 }
                                             allowDecimal={ field.allowDecimal }
-                                            decimalScale={
-                                                field.allowDecimal
-                                                    ? 2
-                                                    : 0
-                                            }
-                                            classNames={
-                                                { control: NIclasses.control }
-                                            }
+                                            decimalScale={ field.allowDecimal ? 2 : 0 }
+                                            classNames={ { control: NIclasses.control } }
                                             { ...form.getInputProps(field.name) }
-                                            styles={
-                                                form.errors[field.name]
-                                                    ? errorInputStyles
-                                                    : {}
-                                            }
+                                            styles={ form.errors[field.name] ? errorInputStyles : {} }
                                         />
                                     )) }
                                 </Group>
                                 <Group grow mt="md">
-                                    <Button
-                                        variant="outline"
-                                        color={ Colours.accent.primary }
-                                        onClick={ prevStep }
-                                    >
-                                        Back
-                                    </Button>
-                                    <Button
-                                        variant="gradient"
-                                        gradient={ gradientProps }
-                                        onClick={ nextStep }
-                                    >
-                                        Next
-                                    </Button>
+                                    <Button variant="outline" color={ Colours.accent.primary } onClick={ prevStep }>Back</Button>
+                                    <Button variant="gradient" gradient={ gradientProps } onClick={ nextStep }>Next</Button>
                                 </Group>
                             </Fieldset>
                         ) }
 
                         { step === 2 && (
-                            <Fieldset legend="Ingredients">
+                            <Fieldset legend="Ingredients" disabled={ submitting }>
                                 <Stack gap="xs">
                                     <JsonInput
                                         label="Ingredients"
@@ -306,45 +279,20 @@ export default function RecipeAddPage () {
                                         autosize
                                         minRows={ 4 }
                                         maxRows={ 20 }
-                                        { ...form.getInputProps(
-                                            'ingredients'
-                                        ) }
-                                        styles={
-                                            form.errors.ingredients
-                                                ? errorInputStyles
-                                                : {}
-                                        }
-                                        placeholder={ `[
-  {
-    "amount": 1,
-    "unit": "pcs",
-    "item": "Onion",
-    "prep": "thinly sliced"
-  }
-]` }
+                                        { ...form.getInputProps('ingredients') }
+                                        styles={ form.errors.ingredients ? errorInputStyles : {} }
+                                        placeholder={ `[\n  {\n    "amount": 1,\n    "unit": "pcs",\n    "item": "Onion",\n    "prep": "thinly sliced"\n  }\n]` }
                                     />
                                     <Group grow mt="md">
-                                        <Button
-                                            variant="outline"
-                                            color={ Colours.accent.primary }
-                                            onClick={ prevStep }
-                                        >
-                                            Back
-                                        </Button>
-                                        <Button
-                                            variant="gradient"
-                                            gradient={ gradientProps }
-                                            onClick={ nextStep }
-                                        >
-                                            Next
-                                        </Button>
+                                        <Button variant="outline" color={ Colours.accent.primary } onClick={ prevStep }>Back</Button>
+                                        <Button variant="gradient" gradient={ gradientProps } onClick={ nextStep }>Next</Button>
                                     </Group>
                                 </Stack>
                             </Fieldset>
                         ) }
 
                         { step === 3 && (
-                            <Fieldset legend="Method">
+                            <Fieldset legend="Method" disabled={ submitting }>
                                 <Stack gap="xs">
                                     <JsonInput
                                         label="Method"
@@ -353,95 +301,56 @@ export default function RecipeAddPage () {
                                         autosize
                                         minRows={ 4 }
                                         maxRows={ 20 }
-                                        { ...form.getInputProps(
-                                            'method'
-                                        ) }
-                                        styles={
-                                            form.errors.method
-                                                ? errorInputStyles
-                                                : {}
-                                        }
-                                        placeholder={ `[
-  "Whisk all the ingredients together in a large bowl.",
-  "Transfer to a small pot and simmer for 10 minutes.",
-  "Remove from heat and let cool.",
-  "Refrigerate for at least one day before use."
-]` }
+                                        { ...form.getInputProps('method') }
+                                        styles={ form.errors.method ? errorInputStyles : {} }
+                                        placeholder={ `[\n  "Whisk all the ingredients together in a large bowl.",\n  "Transfer to a small pot and simmer for 10 minutes."\n]` }
                                     />
                                     <Group grow mt="md">
-                                        <Button
-                                            variant="outline"
-                                            color={ Colours.accent.primary }
-                                            onClick={ prevStep }
-                                        >
-                                            Back
-                                        </Button>
-                                        <Button
-                                            variant="gradient"
-                                            gradient={ gradientProps }
-                                            onClick={ nextStep }>
-                                            Next
-                                        </Button>
+                                        <Button variant="outline" color={ Colours.accent.primary } onClick={ prevStep }>Back</Button>
+                                        <Button variant="gradient" gradient={ gradientProps } onClick={ nextStep }>Next</Button>
                                     </Group>
                                 </Stack>
                             </Fieldset>
                         ) }
 
                         { step === 4 && (
-                            <Fieldset legend="Image">
+                            <Fieldset legend="Image" disabled={ submitting }>
                                 <Stack gap="xs">
                                     <TextInput
                                         label="Image File"
                                         disabled
-                                        {
-                                            ...form.getInputProps(
-                                                'imageFilename'
-                                            ) }
+                                        { ...form.getInputProps('imageFilename') }
                                     />
                                     <Group grow mt="md">
-                                        <Button
-                                            variant="outline"
-                                            color={ Colours.accent.primary }
-                                            onClick={ prevStep }
-                                        >
-                                            Back
-                                        </Button>
-                                        <Button
-                                            variant="gradient"
-                                            gradient={ gradientProps }
-                                            onClick={ nextStep }
-                                        >
-                                            Next
-                                        </Button>
+                                        <Button variant="outline" color={ Colours.accent.primary } onClick={ prevStep }>Back</Button>
+                                        <Button variant="gradient" gradient={ gradientProps } onClick={ nextStep }>Next</Button>
                                     </Group>
                                 </Stack>
                             </Fieldset>
                         ) }
 
                         { step === 5 && (
-                            <Fieldset legend="Additional Notes">
+                            <Fieldset legend="Additional Notes" disabled={ submitting }>
                                 <Stack gap="xs">
-                                    <TextInput
+                                    <JsonInput
                                         label="Notes (Optional)"
-                                        { ...form.getInputProps(
-                                            'notes'
-                                        ) }
+                                        validationError="Invalid JSON"
+                                        formatOnBlur
+                                        autosize
+                                        minRows={ 4 }
+                                        maxRows={ 20 }
+                                        { ...form.getInputProps('notes') }
+                                        styles={ form.errors.notes ? errorInputStyles : {} }
+                                        placeholder={ `[\n  "Best served with crusty bread."\n]` }
                                     />
                                     <Group grow mt="md">
-                                        <Button
-                                            variant="outline"
-                                            color={ Colours.accent.primary }
-                                            onClick={ prevStep }
-                                        >
-                                            Back
-                                        </Button>
+                                        <Button variant="outline" color={ Colours.accent.primary } onClick={ prevStep }>Back</Button>
                                         <Button
                                             type="submit"
                                             variant="gradient"
                                             gradient={ gradientProps }
-                                            rightSection={
-                                                <Icon icon="IconCloudUpload" stroke={ 3 } />
-                                            }
+                                            loading={ submitting }
+                                            rightSection={ <Icon icon="IconCloudUpload" stroke={ 3 } /> }
                                         >
                                             Submit
                                         </Button>
@@ -452,24 +361,12 @@ export default function RecipeAddPage () {
                     </form>
                 </Box>
             </ScrollArea>
-            <Group
-                gap={ 5 }
-                mt="xs"
-                justify="center"
-                style={
-                    { marginTop: 'auto', width: '100%' }
-                }>
+            <Group gap={ 5 } mt="xs" justify="center" style={ { marginTop: 'auto', width: '100%' } }>
                 { progressValues.map((progress, index) => (
                     <Progress
                         key={ index }
                         size="md"
-                        color={
-                            progress === 100
-                                ? Colours.status.success
-                                : progress < 50
-                                    ? Colours.status.error
-                                    : Colours.status.warning
-                        }
+                        color={ progress === 100 ? Colours.status.success : progress < 50 ? Colours.status.error : Colours.status.warning }
                         value={ progress }
                         transitionDuration={ 200 }
                         style={ { flex: 1 } }
