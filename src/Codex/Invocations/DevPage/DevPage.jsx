@@ -220,7 +220,7 @@ export default function DevPage () {
         } }>
             <Group position="apart" align="flex-end">
                 <Title order={ 3 }>Edit Existing Recipe</Title>
-                <TextInput
+                <NumberInput
                     label="Load Recipe ID"
                     value={ id }
                     onChange={ val => setId(val === '' ? 0 : Number(val)) }
