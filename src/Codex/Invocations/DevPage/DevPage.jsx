@@ -385,7 +385,6 @@ export default function DevPage () {
                                 <Stack gap="xs">
                                     <TextInput
                                         label="Image File"
-                                        disabled
                                         { ...form.getInputProps('imageFilename') }
                                     />
                                     <Group grow mt="md">
