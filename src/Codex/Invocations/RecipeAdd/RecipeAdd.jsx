@@ -36,7 +36,7 @@ const NUTRITION_FIELDS = [
     { name: 'salt', label: 'Salt (g)', allowDecimal: true }
 ];
 
-export default function RecipeAddPage () {
+export default function RecipeAdd () {
     const [ step, setStep ] = useState(0);
     const [ submitting, setSubmitting ] = useState(false);
 
@@ -64,7 +64,9 @@ export default function RecipeAddPage () {
                 return errors;
             }
             if (step === 2) {
-                return { ingredients: !values.ingredients.trim() ? true : null };
+                return {
+                    ingredients: !values.ingredients.trim() ? true : null
+                };
             }
             if (step === 3) {
                 return { method: !values.method.trim() ? true : null };
@@ -73,7 +75,7 @@ export default function RecipeAddPage () {
                 if (values.notes.trim() !== '') {
                     try {
                         JSON.parse(values.notes);
-                    } catch (e) {
+                    } catch {
                         return { notes: true };
                     }
                 }
@@ -152,8 +154,12 @@ export default function RecipeAddPage () {
     };
 
     const progressValues = useMemo(() => [ 0, 1, 2, 3, 4, 5 ].map(index => {
-        if (step > index) { return 100; }
-        if (step < index) { return 0; }
+        if (step > index) {
+            return 100;
+        }
+        if (step < index) {
+            return 0;
+        }
         return form.isValid() ? 100 : 50;
     }), [ step, form ]);
 
@@ -164,7 +170,8 @@ export default function RecipeAddPage () {
             borderRadius: '0.5rem',
             height: '100%',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            maxWidth: 600
         } }>
             <ScrollArea>
                 <Box style={ { flex: 1 } }>
@@ -238,7 +245,7 @@ export default function RecipeAddPage () {
                                             { ...form.getInputProps('cookTime') }
                                         />
                                     </Group>
-                                    <Button mt="md" variant="gradient" gradient={ gradientProps } onClick={ nextStep }>
+                                    <Button variant="gradient" gradient={ gradientProps } onClick={ nextStep }>
                                         Next Section
                                     </Button>
                                 </Stack>
@@ -350,7 +357,7 @@ export default function RecipeAddPage () {
                                             variant="gradient"
                                             gradient={ gradientProps }
                                             loading={ submitting }
-                                            rightSection={ <Icon icon="IconCloudUpload" stroke={ 3 } /> }
+                                            rightSection={ <Icon icon="IconCloudUpload" stroke={ 2.5 } /> }
                                         >
                                             Submit
                                         </Button>

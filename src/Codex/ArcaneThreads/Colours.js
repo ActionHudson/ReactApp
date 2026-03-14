@@ -7,9 +7,9 @@ export const Colours = {
     border: "#C4C4C4",
     accent: {
         primary: "#FF6B9D",
-        primaryHover: "#D7467B",
+        primaryDarker: "#D7467B",
         secondary: "#F18F01",
-        secondaryHover: "#D07D01"
+        secondaryDarker: "#D07D01"
     },
     status: {
         success: "#27B635",

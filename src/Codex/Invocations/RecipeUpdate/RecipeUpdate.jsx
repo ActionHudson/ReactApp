@@ -36,7 +36,7 @@ const NUTRITION_FIELDS = [
     { name: 'salt', label: 'Salt (g)', allowDecimal: true }
 ];
 
-export default function DevPage () {
+export default function RecipeUpdate () {
     const [ step, setStep ] = useState(0);
     const [ id, setId ] = useState(1);
     const [ loading, setLoading ] = useState(false);
@@ -75,7 +75,7 @@ export default function DevPage () {
                 if (values.notes?.trim() !== '') {
                     try {
                         JSON.parse(values.notes);
-                    } catch (e) {
+                    } catch {
                         return { notes: true };
                     }
                 }
@@ -104,7 +104,7 @@ export default function DevPage () {
                                     ? JSON.parse(parsedData[key])
                                     : parsedData[key];
                                 parsedData[key] = JSON.stringify(obj, null, 2);
-                            } catch (e) {
+                            } catch {
                                 parsedData[key] = String(parsedData[key]);
                             }
                         } else {
@@ -130,13 +130,16 @@ export default function DevPage () {
                         salt: Number(parsedData.salt ?? 0),
                         ingredients: parsedData.ingredients,
                         method: parsedData.method,
-                        imageFilename: parsedData.image_filename ?? 'Disabled - talk to Admin',
+                        image_filename: parsedData.image_filename ?? 'Disabled - talk to Admin',
                         notes: parsedData.notes
                     });
+                } else {
+                    form.reset();
                 }
             })
             .catch(err => {
                 console.error("Fetch error:", err);
+                form.reset();
             })
             .finally(() => setLoading(false));
     }, [id]);
@@ -170,6 +173,7 @@ export default function DevPage () {
                 salt: values.salt,
                 ingredients: values.ingredients,
                 method: values.method,
+                image_filename: values.image_filename,
                 notes: values.notes
             };
 
@@ -302,12 +306,7 @@ export default function DevPage () {
                                             { ...form.getInputProps('cookTime') }
                                         />
                                     </Group>
-                                    <Button
-                                        mt="md"
-                                        variant="gradient"
-                                        gradient={ gradientProps }
-                                        onClick={ nextStep }
-                                    >
+                                    <Button variant="gradient" gradient={ gradientProps } onClick={ nextStep }>
                                         Next Section
                                     </Button>
                                 </Stack>
@@ -350,6 +349,7 @@ export default function DevPage () {
                                         maxRows={ 20 }
                                         { ...form.getInputProps('ingredients') }
                                         styles={ form.errors.ingredients ? errorInputStyles : {} }
+                                        placeholder={ `[\n  {\n    "amount": 1,\n    "unit": "pcs",\n    "item": "Onion",\n    "prep": "thinly sliced"\n  }\n]` }
                                     />
                                     <Group grow mt="md">
                                         <Button variant="outline" color={ Colours.accent.primary } onClick={ prevStep }>Back</Button>
@@ -371,6 +371,7 @@ export default function DevPage () {
                                         maxRows={ 20 }
                                         { ...form.getInputProps('method') }
                                         styles={ form.errors.method ? errorInputStyles : {} }
+                                        placeholder={ `[\n  "Whisk all the ingredients together in a large bowl.",\n  "Transfer to a small pot and simmer for 10 minutes."\n]` }
                                     />
                                     <Group grow mt="md">
                                         <Button variant="outline" color={ Colours.accent.primary } onClick={ prevStep }>Back</Button>
@@ -385,7 +386,7 @@ export default function DevPage () {
                                 <Stack gap="xs">
                                     <TextInput
                                         label="Image File"
-                                        { ...form.getInputProps('imageFilename') }
+                                        { ...form.getInputProps('image_filename') }
                                     />
                                     <Group grow mt="md">
                                         <Button variant="outline" color={ Colours.accent.primary } onClick={ prevStep }>Back</Button>
@@ -416,7 +417,7 @@ export default function DevPage () {
                                             variant="gradient"
                                             gradient={ gradientProps }
                                             loading={ saving }
-                                            rightSection={ <Icon icon="IconCloudUpload" stroke={ 3 } /> }
+                                            rightSection={ <Icon icon="IconCloudUpload" stroke={ 2.5 } /> }
                                         >
                                             Save All Changes
                                         </Button>

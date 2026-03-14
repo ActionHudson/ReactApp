@@ -1,13 +1,13 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import { MainLayout } from './Codex/Grimoires/MainLayout/Mainlayout';
-import DevPage from './Codex/Invocations/DevPage/DevPage';
-import LandingPage from './Codex/Invocations/LandingPage/LandingPage';
-import PlantChart from './Codex/Invocations/PlantChart/PlantChart';
-import RecipeAddPage from './Codex/Invocations/RecipeAdd/RecipeAdd';
+import Dev from './Codex/Invocations/Dev/Dev';
+import Landing from './Codex/Invocations/Landing/Landing';
+import PlantingChart from './Codex/Invocations/PlantingChart/PlantingChart';
+import RecipeAdd from './Codex/Invocations/RecipeAdd/RecipeAdd';
 import RecipeDetail from './Codex/Invocations/RecipeDetail/RecipeDetail';
 import Recipes from './Codex/Invocations/Recipes/Recipes';
-import ReferencePage from './Codex/Invocations/ReferencePage/ReferencePage';
+import Reference from './Codex/Invocations/Reference/Reference';
 
 const basename = "/";
 
@@ -18,27 +18,27 @@ export const router = createBrowserRouter(
             children: [
                 {
                     path: '/',
-                    element: <LandingPage />
+                    element: <Landing />
                 },
                 {
-                    path: '/recipes',
+                    path: '/Recipes',
                     children: [
                         { index: true, element: <Recipes /> },
-                        { path: 'add', element: <RecipeAddPage /> },
+                        { path: 'add', element: <RecipeAdd /> },
                         { path: ':id', element: <RecipeDetail /> }
                     ]
                 },
                 {
-                    path: '/reference',
-                    element: <ReferencePage />
+                    path: '/Reference',
+                    element: <Reference />
                 },
                 {
-                    path: '/plantChart',
-                    element: <PlantChart />
+                    path: '/PlantingChart',
+                    element: <PlantingChart />
                 },
                 {
-                    path: '/DevPage',
-                    element: <DevPage />
+                    path: '/Dev',
+                    element: <Dev />
                 }
             ]
         }

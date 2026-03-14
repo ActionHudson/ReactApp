@@ -8,7 +8,7 @@ import { Colours } from '../../ArcaneThreads/Colours';
 import { notify } from '../../ArcaneThreads/Notify';
 import Icon from "../../Runes/Icon/Icon";
 
-export default function PlantChart () {
+export default function PlantingChart () {
     const [ plantData, setPlantData ] = useState([]);
     const [ loading, setLoading ] = useState(true);
 

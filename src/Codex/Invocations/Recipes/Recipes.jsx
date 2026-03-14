@@ -90,7 +90,8 @@ export default function Recipes () {
                 flexDirection: 'column',
                 minHeight: 0,
                 height: '100%',
-                position: 'relative'
+                position: 'relative',
+                width: '100%'
             } }
         >
             <LoadingOverlay

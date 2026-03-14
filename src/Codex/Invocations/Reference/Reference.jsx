@@ -77,7 +77,7 @@ const TAB_CONFIG = {
     }
 };
 
-export default function ReferencePage () {
+export default function Reference () {
     const [ activeTab, setActiveTab ] = useState('vessels');
     const [ selected, setSelected ] = useState([]);
     const [ sortStatus, setSortStatus ] = useState({

@@ -14,22 +14,21 @@ export const Nav = [
     {
         icon: "IconNotebook",
         label: "Recipes",
-        path: "/recipes"
+        path: "/Recipes"
     },
     { icon: "IconListSearch",
         label: "Reference",
-        path: "/reference"
+        path: "/Reference"
     },
     {
         icon: "IconSeedling",
-        label: "Plant Chart",
-        path: "/PlantChart"
+        label: "Planting Chart",
+        path: "/PlantingChart"
+    },
+    {
+        icon: "IconFlask",
+        label: "Development Area",
+        path: "/Dev",
+        disabled: true
     }
-
-//     ,
-//     {
-//         icon: "IconFlask",
-//         label: "Dev Area",
-//         path: "/DevPage"
-//     }
 ];
