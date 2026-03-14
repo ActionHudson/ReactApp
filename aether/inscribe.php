@@ -58,33 +58,3 @@ try {
     http_response_code(500);
     echo json_encode(["error" => $e->getMessage()]);
 }
-
-
-// const payload = {
-//     table: 'plants',
-//     data: {
-//         name: 'Butternut Squash',
-//         brand: 'Herbal Age',
-//         breed: 'Hunter',
-//         plant_depth_mm: 25,
-//         sowing_info: 'Sow in pots under cover.',
-//         schedule: {
-//             apr: "SAH",
-//             may: "SAH",
-//             jun: "SO",
-//             sep: "HAR",
-//             oct: "HAR"
-//         }
-//     }
-// };
-
-// const res = await fetch('/aether/insert.php', {
-//     method: 'POST',
-//     headers: {
-//         'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify(payload)
-// });
-
-// const result = await res.json();
-// console.log(result);

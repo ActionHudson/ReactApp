@@ -38,3 +38,5 @@ export const Border = {
         xl: '16px'
     }
 };
+
+export const MinSiteWidth = '520px';

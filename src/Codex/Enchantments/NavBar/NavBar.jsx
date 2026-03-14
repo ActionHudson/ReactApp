@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 
+import { MinSiteWidth } from '../../ArcaneThreads/Sizes';
 import SimpleGrid from '../../Runes/SimpleGrid/SimpleGrid';
 import NavItem from '../../Sigils/NavItem/NavItem';
 
@@ -19,7 +20,7 @@ import NavItem from '../../Sigils/NavItem/NavItem';
 
 export default function NavBar ({ navlinks }) {
     return (
-        <SimpleGrid cols={ navlinks.length } spacing="xs">
+        <SimpleGrid cols={ navlinks.length } spacing="xs" style={ { minWidth: MinSiteWidth } }>
             { navlinks.map((item, index) => (
                 <NavItem
                     key={ index }

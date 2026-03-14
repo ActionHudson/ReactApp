@@ -4,7 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 
 import { Colours } from '../../ArcaneThreads/Colours';
 import { Nav } from '../../ArcaneThreads/Nav';
-import { Spacing } from '../../ArcaneThreads/Sizes';
+import { MinSiteWidth, Spacing } from '../../ArcaneThreads/Sizes';
 import NavBar from '../../Enchantments/NavBar/NavBar';
 
 export const MainLayout = () => {
@@ -67,7 +67,8 @@ export const MainLayout = () => {
                     style={ {
                         display: 'flex',
                         flexDirection: 'column',
-                        minHeight: 0
+                        minHeight: 0,
+                        minWidth: MinSiteWidth
                     } }
                     w="100%"
                 >

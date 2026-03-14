@@ -20,7 +20,6 @@ export default function Icon ({
     ...props
 }) {
     const IconComponent = TablerIcons[icon];
-
     return (
         <IconComponent
             size={ FontSize[size] }

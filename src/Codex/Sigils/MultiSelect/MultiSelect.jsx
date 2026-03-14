@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import Icon from '../../Runes/Icon/Icon';
 
+import classes from './MultiSelect.module.css';
+
 export default function MultiSelect ({
     data,
     onChange,
@@ -23,6 +25,13 @@ export default function MultiSelect ({
             size='md'
             onChange={ onChange }
             value={ selected }
+            classNames={ {
+                input: classes.input,
+                section: classes.section,
+                groupLabel: classes.groupLabel,
+                pill: classes.pill,
+                pillLabel: classes.pillLabel
+            } }
             { ...props }
         />
     );

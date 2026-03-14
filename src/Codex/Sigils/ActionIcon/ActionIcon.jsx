@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { Colours } from '../../ArcaneThreads/Colours';
 import Icon from "../../Runes/Icon/Icon";
+import classes from '../../Sigils/ActionIcon/ActionIcon.module.css';
 
 /**
  * ActionIcon component.
@@ -19,13 +20,14 @@ import Icon from "../../Runes/Icon/Icon";
  */
 
 export default function ActionIcon ({
-    variant = "outline",
-    id,
+    variant = "filled",
+    id = null,
     onClick = undefined,
     size = "md",
     iconSize = "lg",
     color = Colours.accent.primary,
     icon,
+    isDisabled = false,
     ...props
 }) {
     return (
@@ -34,6 +36,8 @@ export default function ActionIcon ({
             size={ size }
             color={ color }
             onClick={ e => onClick?.(e, id) }
+            className={ classes.button }
+            disabled={ isDisabled }
             { ...props }
         >
             <Icon
@@ -45,11 +49,12 @@ export default function ActionIcon ({
 }
 
 ActionIcon.propTypes = {
-    variant: PropTypes.string,
-    id: PropTypes.number.isRequired,
+    variant: PropTypes.oneOf([ "outline", "filled" ]),
+    id: PropTypes.number,
     onClick: PropTypes.func,
     size: PropTypes.string,
     iconSize: PropTypes.string,
     color: PropTypes.string,
-    icon: PropTypes.string.isRequired
+    icon: PropTypes.string.isRequired,
+    isDisabled: PropTypes.bool
 };

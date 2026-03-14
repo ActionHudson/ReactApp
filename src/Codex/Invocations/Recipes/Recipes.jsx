@@ -33,12 +33,16 @@ export default function Recipes () {
                         return;
                     }
 
-                    const imagePromises = data.map(recipe => new Promise(resolve => {
-                        const img = new window.Image();
-                        img.src = `/data/recipeImages/${ recipe.image_filename }`;
-                        img.onload = resolve;
-                        img.onerror = resolve;
-                    }));
+                    const imagePromises = data.map(
+                        recipe => new Promise(resolve => {
+                            const img = new window.Image();
+                            img.src = `/data/recipeImages/${
+                                recipe.image_filename
+                            }`;
+                            img.onload = resolve;
+                            img.onerror = resolve;
+                        })
+                    );
 
                     Promise.all(imagePromises).then(() => {
                         setLoading(false);
@@ -120,14 +124,15 @@ export default function Recipes () {
                 >
                     { items.map(recipe => {
                         const isBookmarked = favorites.has(recipe.id);
-
                         return (
                             <RecipeCard
                                 key={ recipe.id }
                                 recipeId={ recipe.id }
                                 recipeTitle={ recipe.recipe_name }
                                 recipeImage={
-                                    `/data/recipeImages/${ recipe.image_filename }`
+                                    `/data/recipeImages/${
+                                        recipe.image_filename
+                                    }`
                                 }
                                 isBookmarked={ isBookmarked }
                                 handleBookmarkToggle={ handleBookmarkToggle }
@@ -136,7 +141,6 @@ export default function Recipes () {
                     }) }
                 </SimpleGrid>
             </ScrollArea>
-
         </Stack>
     );
 }

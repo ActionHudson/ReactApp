@@ -47,10 +47,13 @@ export function RecipeCard ({
                         top={ 5 }
                         right={ 5 }
                         style={ { zIndex: 1 } }
-                        icon={ isBookmarked ? "IconBookmarkFilled" : "IconBookmark" }
+                        icon={
+                            isBookmarked
+                                ? "IconBookmarkFilled"
+                                : "IconBookmark"
+                        }
                     />
                 </Box>
-
                 <Box style={ boxContainerStyle }>
                     <Text fw={ 800 } size="md" lineClamp={ 2 } lh={ 1.4 }>
                         { recipeTitle }

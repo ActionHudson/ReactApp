@@ -54,7 +54,11 @@ export const AllSizes = args => {
         <Group align="flex-end" gap="lg">
             { sizes.map(s => (
                 <Stack key={ s } align="center" gap="xs">
-                    <Icon icon={ args.icon } size={ s } stroke={ args.stroke } />
+                    <Icon
+                        icon={ args.icon }
+                        size={ s }
+                        stroke={ args.stroke }
+                    />
                     <Text size="xs" c="dimmed">
                         { s }
                     </Text>

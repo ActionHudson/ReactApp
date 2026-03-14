@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { Colours } from "../../ArcaneThreads/Colours";
 
-import Bclasses from "./Button.module.css";
+import classes from "./Button.module.css";
 
 /**
  * A customized Mantine Button component with predefined variants and states.
@@ -44,7 +44,7 @@ export default function Button ({
             color={ Colours.accent.primary }
             onClick={ onClick }
             disabled={ isDisabled }
-            className={ variant === "outline" ? Bclasses.button : undefined }
+            className={ variant === "outline" ? classes.button : undefined }
             type={ isSubmit ? "submit" : "button" }
             loading={ isLoading }
             { ...props }
