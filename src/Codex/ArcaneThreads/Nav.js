@@ -1,11 +1,4 @@
 export const Nav = [
-
-    // {
-    //     icon: "IconInfoCircle",
-    //     label: "About",
-    //     path: "/about",
-    //     disabled: true
-    // },
     {
         icon: "IconHome",
         label: "Home",
@@ -22,13 +15,28 @@ export const Nav = [
     },
     {
         icon: "IconSeedling",
-        label: "Planting Chart",
+        label: "Planting",
         path: "/PlantingChart"
     },
     {
         icon: "IconFlask",
-        label: "Development Area",
+        label: "Dev Area",
         path: "/Dev",
         disabled: true
+    },
+    {
+        icon: "IconColorFilter",
+        label: "Colours",
+        path: "/Colours"
+    },
+    {
+        icon: "IconListCheck",
+        label: "Devs To Do",
+        path: "/ToDo"
+    },
+    {
+        icon: "IconSettings",
+        label: "Settings",
+        path: "/Settings"
     }
 ];

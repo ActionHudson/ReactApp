@@ -138,6 +138,7 @@ export default function RecipeUpdate () {
                 }
             })
             .catch(err => {
+                notify.error('Error!', 'Failed to connect to database.');
                 console.error("Fetch error:", err);
                 form.reset();
             })

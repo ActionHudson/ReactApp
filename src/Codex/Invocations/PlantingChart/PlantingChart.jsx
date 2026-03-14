@@ -140,7 +140,6 @@ export default function PlantingChart () {
                 withTableBorder
                 highlightOnHover
                 records={ records }
-                rowKey="id"
                 sortStatus={ sortStatus }
                 onSortStatusChange={ setSortStatus }
                 sortIcons={ {

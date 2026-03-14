@@ -27,7 +27,6 @@ const TAB_CONFIG = {
                     <span>
                         { weightValue }
                         { ' ' }
-                        { ' ' }
                         <Code>
                             { weightUnit }
                         </Code>
@@ -42,8 +41,9 @@ const TAB_CONFIG = {
                 : item.data;
             return {
                 id: item.id,
-                ...parsed,
                 vesselType: parsed.type,
+                material: parsed.material,
+                size: parsed.size,
                 weightValue: parsed.weight?.value,
                 weightUnit: parsed.weight?.unit,
                 capacityValue: parsed.capacity?.value,
@@ -65,7 +65,6 @@ const TAB_CONFIG = {
                     <span>
                         { value }
                         { ' ' }
-                        { ' ' }
                         <Code>
                             { unit || '°C' }
                         </Code>
@@ -79,7 +78,6 @@ const TAB_CONFIG = {
                 : item.data;
             return {
                 id: item.id,
-                ...parsed,
                 category: parsed.category,
                 setting: parsed.setting,
                 value: parsed.value,
@@ -111,17 +109,26 @@ export default function Reference () {
             })
             .catch(err => {
                 notify.error('Fetch Error', 'Could not load reference data.');
+                console.error("Fetch error:", err);
                 setLoading(false);
             });
     }, []);
 
     const currentConfig = TAB_CONFIG[activeTab];
 
-    const initialRecords = useMemo(() => rawData
-        .filter(item => item.type === currentConfig.dbType)
-        .map(currentConfig.transform), [ activeTab, rawData, currentConfig ]);
+    const initialRecords = useMemo(() => {
+        if (!currentConfig?.dbType) {
+            return [];
+        }
+        return rawData
+            .filter(item => item.type === currentConfig.dbType)
+            .map(currentConfig.transform);
+    }, [ rawData, currentConfig ]);
 
     const groupedData = useMemo(() => {
+        if (!currentConfig?.filterKeys) {
+            return [];
+        }
         const groups = {};
         currentConfig.filterKeys.forEach(key => {
             groups[key] = new Set();
@@ -163,14 +170,18 @@ export default function Reference () {
 
             filtered = filtered.filter(
                 record => Object.entries(selectionsByGroup).every(
-                    ([ group, valuesSet ]) => valuesSet.has(String(record[group]))
+                    ([ group, valuesSet ]) => valuesSet.has(
+                        String(record[group])
+                    )
                 )
             );
         }
 
         if (sortStatus.columnAccessor) {
             const sorted = sortBy(filtered, sortStatus.columnAccessor);
-            filtered = sortStatus.direction === 'desc' ? sorted.reverse() : sorted;
+            filtered = sortStatus.direction === 'desc'
+                ? sorted.reverse()
+                : sorted;
         }
 
         return filtered;
@@ -192,23 +203,60 @@ export default function Reference () {
                 position: 'relative'
             } }
         >
-            <LoadingOverlay visible={ loading } overlayProps={ { blur: 1 } } />
+            <LoadingOverlay
+                visible={ loading }
+                zIndex={ 1000 }
+                overlayProps={ {
+                    radius: "sm",
+                    blur: 1
+                } }
+                loaderProps={ {
+                    size: 200,
+                    color: Colours.accent.primary,
+                    type: 'oval'
+                } }
+                style={ {
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: 0
+                } }
+            />
             <Tabs
                 color={ Colours.accent.primary }
                 value={ activeTab }
                 onChange={ handleTabChange }
-                style={ { display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 } }
+                style={
+                    {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        flex: 1,
+                        minHeight: 0
+                    }
+                }
             >
                 <Tabs.List>
                     <Tabs.Tab
                         value="vessels"
-                        leftSection={ <Icon style={ { color: '#FF6B9D' } } icon="IconBowlFilled" size={ 16 } /> }
+                        leftSection={
+                            <Icon
+                                style={ { color: Colours.accent.primary } }
+                                icon="IconBowlFilled"
+                                size={ 16 }
+                            />
+                        }
                     >
                         Vessels
                     </Tabs.Tab>
                     <Tabs.Tab
                         value="temperature"
-                        leftSection={ <Icon style={ { color: '#FF6B9D' } } icon="IconTemperaturePlusFilled" size={ 16 } /> }
+                        leftSection={
+                            <Icon
+                                style={ { color: Colours.accent.primary } }
+                                icon="IconTemperaturePlusFilled"
+                                size={ 16 }
+                            />
+                        }
                     >
                         Temperature
                     </Tabs.Tab>
@@ -216,44 +264,61 @@ export default function Reference () {
 
                 <Tabs.Panel
                     value={ activeTab }
-                    style={ { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' } }
+                    style={
+                        {
+                            flex: 1,
+                            minHeight: 0,
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }
+                    }
                 >
                     <Stack gap="md" pt="md" style={ { flex: 1, minHeight: 0 } }>
-                        <FilterControls
-                            data={ groupedData }
-                            selected={ selected }
-                            setSelected={ setSelected }
-                            sortStatus={ sortStatus }
-                            setSortStatus={ setSortStatus }
-                        />
-                        <div style={ { flex: 1, minHeight: 0 } }>
-                            <DataTable
-                                textSelectionDisabled
-                                withTableBorder
-                                withColumnBorders
-                                striped
-                                highlightOnHover
-                                records={ records }
+                        { currentConfig && (
+                            <FilterControls
+                                data={ groupedData }
+                                selected={ selected }
+                                setSelected={ setSelected }
                                 sortStatus={ sortStatus }
-                                onSortStatusChange={ setSortStatus }
-                                columns={ currentConfig.columns }
-                                className="custom-table-scroll"
-                                styles={ {
-                                    table: {
-                                        '--mantine-datatable-striped-color': '#ffe9f0',
-                                        '--mantine-datatable-highlight-on-hover-color': '#ffd0df'
-                                    }
-                                } }
-                                sortIcons={ {
-                                    sorted: <Icon icon="IconChevronUp" size={ 14 } color={ Colours.accent.primary } />,
-                                    unsorted: <Icon icon="IconSelector" size={ 14 } color={ Colours.accent.primary } />
-                                } }
-                                onRowClick={ ({ record, index, event }) => {
-                                    console.log(
-                                        'Row clicked:', record, index, event
-                                    );
-                                } }
+                                setSortStatus={ setSortStatus }
                             />
+                        ) }
+                        <div style={ { flex: 1, minHeight: 0 } }>
+                            { currentConfig && (
+                                <DataTable
+                                    textSelectionDisabled
+                                    withTableBorder
+                                    withColumnBorders
+                                    striped
+                                    highlightOnHover
+                                    records={ records }
+                                    sortStatus={ sortStatus }
+                                    onSortStatusChange={ setSortStatus }
+                                    columns={ currentConfig.columns }
+                                    className="custom-table-scroll"
+                                    styles={ {
+                                        table: {
+                                            '--mantine-datatable-striped-color': '#ffe9f0',
+                                            '--mantine-datatable-highlight-on-hover-color': '#ffd0df'
+                                        }
+                                    } }
+                                    sortIcons={ {
+                                        sorted: <Icon
+                                            icon="IconChevronUp"
+                                            size={ 14 }
+                                            color={ Colours.accent.primary }
+                                        />,
+                                        unsorted: <Icon
+                                            icon="IconSelector"
+                                            size={ 14 }
+                                            color={ Colours.accent.primary }
+                                        />
+                                    } }
+                                    onRowClick={ ({ record }) => {
+                                        console.log(record);
+                                    } }
+                                />
+                            ) }
                         </div>
                     </Stack>
                 </Tabs.Panel>
