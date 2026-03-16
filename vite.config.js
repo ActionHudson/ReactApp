@@ -11,18 +11,21 @@ export default defineConfig({
             '/aether/Aether.php': {
                 target: 'http://localhost:5000',
                 changeOrigin: true,
-                rewrite: path => {
-                    const url = new URL(path, 'http://localhost:5000');
-                    const table = url.searchParams.get('table');
-                    const id = url.searchParams.get('id');
 
-                    if (table && id) {
-                        return `/${ table }/${ id }`;
-                    }
-                    if (table) {
-                        return `/${ table }`;
-                    }
-                    return path;
+                configure: proxy => {
+                    proxy.on('proxyReq', (proxyReq, req) => {
+                        if (req.method !== 'GET') { return; }
+
+                        const url = new URL(req.url, 'http://localhost');
+                        const table = url.searchParams.get('table');
+                        const id = url.searchParams.get('id');
+
+                        if (table && id) {
+                            proxyReq.path = `/${ table }/${ id }`;
+                        } else if (table) {
+                            proxyReq.path = `/${ table }`;
+                        }
+                    });
                 }
             },
             '/aether/manifest.php': {

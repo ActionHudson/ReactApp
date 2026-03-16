@@ -21,6 +21,11 @@ export default function AetherEditor () {
         initialValues: {}
     });
 
+    const handleBack = () => {
+        setIsEditing(false);
+        form.reset();
+    };
+
     const loadStructure = async () => {
         if (!tableName) { return notify.error('Enter a table name'); }
         if (mode === 'update' && !targetId) { return notify.error('Enter an ID for update'); }
@@ -28,15 +33,15 @@ export default function AetherEditor () {
         setLoading(true);
         try {
             const url = mode === 'update'
-                ? `/aether/Aether.php?table=${ tableName }&id=${ targetId }`
-                : `/aether/Aether.php?table=${ tableName }`;
+                ? `/aether/aether.php?table=${ tableName }&id=${ targetId }`
+                : `/aether/aether.php?table=${ tableName }`;
 
             const res = await fetch(url);
             const data = await res.json();
 
             if (data.error) { throw new Error(data.error); }
 
-            form.initialize(data);
+            form.setValues(data);
             setIsEditing(true);
         } catch (err) {
             notify.error('Load Failed', err.message);
@@ -48,7 +53,11 @@ export default function AetherEditor () {
     const handleSave = async values => {
         setLoading(true);
         try {
-            const res = await fetch('/aether/Aether.php', {
+            const url = mode === 'update'
+                ? `/aether/aether.php?table=${ tableName }&id=${ targetId }`
+                : `/aether/aether.php?table=${ tableName }`;
+
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -63,7 +72,7 @@ export default function AetherEditor () {
             notify.success(mode === 'update' ? 'Entry Updated' : 'Entry Inscribed');
 
             if (mode === 'insert') {
-                setIsEditing(false);
+                handleBack();
                 setTableName('');
             }
         } catch (err) {
@@ -120,7 +129,7 @@ export default function AetherEditor () {
                     <Group justify="space-between">
                         <Button
                             variant="subtle"
-                            onClick={ () => setIsEditing(false) }
+                            onClick={ handleBack }
                             leftSection={ <Icon icon="IconArrowLeft" /> }
                         >
                             Back

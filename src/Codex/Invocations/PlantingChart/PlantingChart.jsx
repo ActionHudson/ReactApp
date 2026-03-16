@@ -11,7 +11,9 @@ import Icon from "../../Runes/Icon/Icon";
 export default function PlantingChart () {
     const [ plantData, setPlantData ] = useState([]);
     const [ loading, setLoading ] = useState(true);
+    const [ sortStatus, setSortStatus ] = useState({
 
+    });
     const statusColors = {
         SAH: { color: "#a4d13a", label: "Sow at Home" },
         SO: { color: "#eee296", label: "Sow Outside" },
@@ -66,12 +68,34 @@ export default function PlantingChart () {
 
     const columns = [
         {
+            accessor: "id",
+            title: "ID",
+            sortable: false,
+            width: 70,
+            render: ({ id }) => (
+                <Text size="xs" c="dimmed">
+                    { id }
+                </Text>
+            )
+        },
+        {
             accessor: "name",
             title: "Name",
             sortable: true,
-            render: ({ name }) => (<Text size="sm" fw={ 500 }>
-                { name }
-            </Text>)
+            render: ({ name, variant }) => (
+                <Group gap={ 4 }>
+                    <Text size="sm" fw={ 500 }>
+                        { name }
+                    </Text>
+                    { variant && (
+                        <Text size="xs" c="dimmed">
+                            (
+                            { variant }
+                            )
+                        </Text>
+                    ) }
+                </Group>
+            )
         },
         ...months.map(month => ({
             accessor: `schedule.${ month }`,
@@ -80,11 +104,6 @@ export default function PlantingChart () {
             render: record => renderStatus(record.schedule?.[month])
         }))
     ];
-
-    const [ sortStatus, setSortStatus ] = useState({
-        columnAccessor: 'name',
-        direction: 'asc'
-    });
 
     const records = useMemo(() => {
         const sorted = sortBy(plantData, sortStatus.columnAccessor);
