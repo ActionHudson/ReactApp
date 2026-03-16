@@ -51,3 +51,11 @@ export const getAllFavorites = async () => {
         request.onerror = () => reject(request.error);
     });
 };
+
+export const clearAllFavorites = async () => {
+    const db = await openDB();
+    const tx = db.transaction('favorites', 'readwrite');
+    const store = tx.objectStore('favorites');
+    await store.clear();
+    await tx.done;
+};

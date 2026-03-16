@@ -26,8 +26,8 @@ export const Nav = [
     },
     {
         icon: "IconColorFilter",
-        label: "Colours",
-        path: "/Colours"
+        label: "AetherEditor",
+        path: "/AetherEditor"
     },
     {
         icon: "IconListCheck",

@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 import { MainLayout } from './Codex/Grimoires/MainLayout/Mainlayout';
-import ColourLab from './Codex/Invocations/ColourLab/ColourLab';
+import AetherEditor from './Codex/Invocations/AetherEditor/AetherEditor';
 import Dev from './Codex/Invocations/Dev/Dev';
 import Landing from './Codex/Invocations/Landing/Landing';
 import PlantingChart from './Codex/Invocations/PlantingChart/PlantingChart';
@@ -53,8 +53,8 @@ export const router = createBrowserRouter(
                     element: <ToDo />
                 },
                 {
-                    path: '/Colours',
-                    element: <ColourLab />
+                    path: '/AetherEditor',
+                    element: <AetherEditor />
                 },
                 {
                     path: '/Settings',

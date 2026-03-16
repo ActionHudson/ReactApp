@@ -8,6 +8,23 @@ export default defineConfig({
     server: {
         port: 3000,
         proxy: {
+            '/aether/Aether.php': {
+                target: 'http://localhost:5000',
+                changeOrigin: true,
+                rewrite: path => {
+                    const url = new URL(path, 'http://localhost:5000');
+                    const table = url.searchParams.get('table');
+                    const id = url.searchParams.get('id');
+
+                    if (table && id) {
+                        return `/${ table }/${ id }`;
+                    }
+                    if (table) {
+                        return `/${ table }`;
+                    }
+                    return path;
+                }
+            },
             '/aether/manifest.php': {
                 target: 'http://localhost:5000',
                 changeOrigin: true,
