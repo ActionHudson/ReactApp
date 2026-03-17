@@ -25,7 +25,7 @@ export const Nav = [
         disabled: true
     },
     {
-        icon: "IconColorFilter",
+        icon: "IconTopologyComplex",
         label: "AetherEditor",
         path: "/AetherEditor"
     },

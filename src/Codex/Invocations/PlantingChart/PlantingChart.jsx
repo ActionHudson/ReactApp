@@ -69,9 +69,9 @@ export default function PlantingChart () {
     const columns = [
         {
             accessor: "id",
-            title: "ID",
+            title: "",
             sortable: false,
-            width: 70,
+            width: 20,
             render: ({ id }) => (
                 <Text size="xs" c="dimmed">
                     { id }

@@ -16,7 +16,7 @@ export default function ToDo () {
             display: 'flex',
             flexDirection: 'column'
         } }>
-            <Timeline active={ 2 } bulletSize={ 24 } lineWidth={ 2 } color={ Colours.status.success }>
+            <Timeline active={ 4 } bulletSize={ 24 } lineWidth={ 2 } color={ Colours.status.success }>
                 <Timeline.Item
                     bullet={
                         <ThemeIcon color={ Colours.status.success } size="lg" radius="xl">
@@ -51,6 +51,20 @@ export default function ToDo () {
                 </Timeline.Item>
 
                 <Timeline.Item
+                    title="Data Expansion"
+                    bullet={
+                        <ThemeIcon color={ Colours.status.success } size="lg" radius="xl">
+                            <Icon icon="IconCheck" size="md" stroke={ 2.5 } color="white" />
+                        </ThemeIcon>
+                    }
+                >
+                    <Stack gap={ 0 }>
+                        <Text size="sm">Add/Update reference data.</Text>
+                        <Text size="sm">Add/Update planting data.</Text>
+                    </Stack>
+                </Timeline.Item>
+
+                <Timeline.Item
                     title="Recipe Infrastructure"
                     bullet={
                         <ThemeIcon color={ Colours.status.warning } size="lg" radius="xl">
@@ -66,7 +80,7 @@ export default function ToDo () {
                 </Timeline.Item>
 
                 <Timeline.Item
-                    title="Data Expansion"
+                    title="Table update and insert code clean up and look refactoring"
                     bullet={
                         <ThemeIcon color={ Colours.status.warning } size="lg" radius="xl">
                             <Icon icon="IconX" size="xs" stroke={ 2.5 } color="white" />
@@ -74,9 +88,10 @@ export default function ToDo () {
                     }
                 >
                     <Stack gap={ 0 }>
-                        <Text size="sm">Add/Update reference data.</Text>
-                        <Text size="sm">Add/Update planting data.</Text>
+                        <Text size="sm">Align aethereditor page look and naming.</Text>
+                        <Text size="sm">Secure the add/update functionality.</Text>
                     </Stack>
+
                 </Timeline.Item>
 
                 <Timeline.Item
