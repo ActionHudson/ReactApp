@@ -91,7 +91,7 @@ export default function PlantingChart () {
             title: "Name",
             sortable: true,
             render: ({ name, variant }) => (
-                <Group gap={ 4 }>
+                <Stack gap={ 0 }>
                     <Text size="sm" fw={ 500 }>
                         { name }
                     </Text>
@@ -102,7 +102,7 @@ export default function PlantingChart () {
                             )
                         </Text>
                     ) }
-                </Group>
+                </Stack>
             )
         },
         ...months.map(month => ({

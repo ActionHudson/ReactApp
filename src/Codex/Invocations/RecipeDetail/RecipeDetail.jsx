@@ -267,7 +267,9 @@ export default function RecipeDetail () {
                                         </div>
                                     </SimpleGrid>
                                     <Image
-                                        src="/src/INF.png"
+                                        src={ `/data/recipeImages/${
+                                            item.image_filename
+                                        }` }
                                         w="100%"
                                         fallbackSrc="/INF.png"
                                     />
@@ -420,7 +422,7 @@ export default function RecipeDetail () {
                                             >
                                                 { index + 1 }
                                             </div>
-                                            <Text style={ { paddingTop: '4px' } }>
+                                            <Text>
                                                 { step }
                                             </Text>
                                         </Group>
