@@ -1,94 +1,74 @@
 import {
-    Accordion, ActionIcon, Checkbox, Group, Image,
+    Accordion, Group, Image,
     LoadingOverlay, Rating, SimpleGrid, Space,
-    Stack, Text, Title } from '@mantine/core';
-import PropTypes from 'prop-types';
+    Stack, Text, Title
+} from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import {
+    addFavorite,
+    getFavoriteById,
+    removeFavorite
+} from '../../../Helpers/IndexedDB';
 import { Colours } from '../../ArcaneThreads/Colours';
 import { notify } from '../../ArcaneThreads/Notify';
 import { Border, Spacing } from '../../ArcaneThreads/Sizes';
+import { MultiplierAccordionControl }
+    from '../../Enchantments/MultiplierAccordionControl/MultiplierAccordionControl';
 import Icon from '../../Runes/Icon/Icon';
+import { NumberedStep } from '../../Runes/NumberedStep/NumberedStep';
+import { RecipeIngredientList }
+    from '../../Runes/RecipeIngredientList/RecipeIngredientList';
+import { RecipeStatBox } from '../../Runes/RecipeStatBox/RecipeStatBox';
 import ScrollArea from '../../Runes/ScrollArea/ScrollArea';
-
-function MultiplierAccordionControl (
-    { children, multiplierIcon, onMultiplierClick, ...props }
-) {
-    return (
-        <Accordion.Control { ...props }>
-            <div
-                style={
-                    {
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        width: '100%'
-                    }
-                }>
-                <span>
-                    { children }
-                </span>
-                <ActionIcon
-                    component="div"
-                    size="lg"
-                    variant="subtle"
-                    color="gray"
-                    onClick={ onMultiplierClick }
-                >
-                    <Icon icon={ multiplierIcon } size={ 20 } />
-                </ActionIcon>
-            </div>
-        </Accordion.Control>
-    );
-}
-
-MultiplierAccordionControl.propTypes = {
-    children: PropTypes.node.isRequired,
-    multiplierIcon: PropTypes.string.isRequired,
-    onMultiplierClick: PropTypes.func.isRequired
-};
+import ActionIcon from '../../Sigils/ActionIcon/ActionIcon';
 
 export default function RecipeDetail () {
-
     const { id } = useParams();
 
     const [ loading, setLoading ] = useState(true);
     const [ item, setItem ] = useState(null);
+    const [ isBookmarked, setIsBookmarked ] = useState(false);
+
+    const [
+        ingredientMultiplier,
+        setIngredientMultiplier
+    ] = useState({ multiplier: 1, icon: 'IconMultiplier1x' });
 
     useEffect(() => {
         let isMounted = true;
 
-        const fetchRecipe = async () => {
+        const fetchData = async () => {
             setLoading(true);
 
             try {
-                const res = await fetch(`/aether/scry.php?table=recipes&id=${ id }`);
+                const [ favStatus, recipeRes ] = await Promise.all([
+                    getFavoriteById(id).catch(() => false),
+                    fetch(`/aether/scry.php?table=recipes&id=${ id }`)
+                ]);
 
-                if (!res.ok) {
+                if (!recipeRes.ok) {
                     throw new Error('Network response was not ok');
                 }
 
-                const data = await res.json();
+                const data = await recipeRes.json();
 
                 if (isMounted) {
+                    if (favStatus) {
+                        setIsBookmarked(true);
+                    }
+
                     if (data && !data.error) {
-
-                        if (typeof data.ingredients === 'string') {
-                            try {
-                                data.ingredients = JSON.parse(data.ingredients);
-                            } catch {
-                                data.ingredients = [];
+                        [ 'ingredients', 'method', 'notes' ].forEach(field => {
+                            if (typeof data[field] === 'string') {
+                                try {
+                                    data[field] = JSON.parse(data[field]);
+                                } catch {
+                                    data[field] = [];
+                                }
                             }
-                        }
-
-                        if (typeof data.method === 'string') {
-                            try {
-                                data.method = JSON.parse(data.method);
-                            } catch {
-                                data.method = [];
-                            }
-                        }
+                        });
 
                         setItem(data);
 
@@ -109,59 +89,65 @@ export default function RecipeDetail () {
                                 setLoading(false);
                             }
                         };
+
                     } else {
                         setLoading(false);
                     }
                 }
             } catch (err) {
                 if (isMounted) {
-                    notify.error('Error!', 'Failed to connect to database.');
+                    notify.error('Error!', 'Failed to load recipe data.');
                     console.error("Fetch error:", err);
                     setLoading(false);
                 }
             }
         };
 
-        fetchRecipe();
+        if (id) {
+            fetchData();
+        }
 
         return () => {
             isMounted = false;
         };
     }, [id]);
 
-    console.log(item);
-
-    const [
-        ingredientMultiplier,
-        setIngredientMultiplier
-    ] = useState({ multiplier: 1, icon: 'IconMultiplier1x' });
-
     const handleMultiplierClick = e => {
         if (e) {
             e.stopPropagation();
         }
         setIngredientMultiplier(prev => {
-            let newMultiplier = 1;
-            let newIcon = 'IconMultiplier1x';
-            switch (prev.multiplier) {
-                case 1:
-                    newMultiplier = 1.5;
-                    newIcon = 'IconMultiplier15x';
-                    break;
-                case 1.5:
-                    newMultiplier = 2;
-                    newIcon = 'IconMultiplier2x';
-                    break;
-                case 2:
-                    newMultiplier = 0.5;
-                    newIcon = 'IconMultiplier05x';
-                    break;
-                default:
-                    newMultiplier = 1;
-                    newIcon = 'IconMultiplier1x';
-            }
-            return { multiplier: newMultiplier, icon: newIcon };
+            const sequence = [
+                { match: 1, m: 1.5, i: 'IconMultiplier15x' },
+                { match: 1.5, m: 2, i: 'IconMultiplier2x' },
+                { match: 2, m: 0.5, i: 'IconMultiplier05x' },
+                { match: 0.5, m: 1, i: 'IconMultiplier1x' }
+            ];
+            const next = sequence.find(
+                s => s.match === prev.multiplier
+            ) || sequence[3];
+            return { multiplier: next.m, icon: next.i };
         });
+    };
+
+    const handleBookmarkToggle = async e => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        try {
+            if (isBookmarked) {
+                await removeFavorite(id);
+                setIsBookmarked(false);
+            } else {
+                await addFavorite(id);
+                setIsBookmarked(true);
+            }
+        } catch (err) {
+            notify.error('Error', 'Failed to update favorites.');
+            console.error(err);
+        }
     };
 
     return (
@@ -169,21 +155,14 @@ export default function RecipeDetail () {
             <LoadingOverlay
                 visible={ loading }
                 zIndex={ 1000 }
-                overlayProps={ {
-                    radius: "sm",
-                    blur: 1
-                } }
-                loaderProps={ {
-                    size: 200,
-                    color: Colours.accent.primary,
-                    type: 'oval'
-                } }
-                style={ {
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    minHeight: 0
-                } }
+                overlayProps={ { radius: "sm", blur: 1 } }
+                loaderProps={
+                    { size: 200, color: Colours.accent.primary, type: 'oval' }
+                }
+                style={
+                    { flex: 1, display: 'flex',
+                        flexDirection: 'column', minHeight: 0 }
+                }
             />
             <ScrollArea
                 style={
@@ -211,23 +190,41 @@ export default function RecipeDetail () {
                             </Accordion.Control>
                             <Accordion.Panel>
                                 <Stack gap="lg">
-                                    <Rating
-                                        size="sm"
-                                        color={ Colours.accent.primary }
-                                        defaultValue={ item.rating }
-                                        readOnly
-                                    />
-
+                                    <Group justify="space-between">
+                                        <Rating
+                                            size="sm"
+                                            color={ Colours.accent.primary }
+                                            defaultValue={ item.rating }
+                                            readOnly
+                                        />
+                                        <ActionIcon
+                                            variant="filled"
+                                            id={ id }
+                                            onClick={ handleBookmarkToggle }
+                                            radius="xl"
+                                            style={ { zIndex: 1 } }
+                                            icon={
+                                                isBookmarked
+                                                    ? "IconBookmarkFilled"
+                                                    : "IconBookmark"
+                                            }
+                                        />
+                                    </Group>
                                     <SimpleGrid
                                         cols={ 4 }
                                         style={ {
-                                            backgroundColor: "#f4f4f4",
+                                            backgroundColor: "#F4F4F4",
                                             borderRadius: Border.radius.md,
                                             padding: Spacing.md
                                         } }
                                     >
                                         <div>
-                                            <Text size="xs" tt="uppercase" ta="center" fw={ 600 }>
+                                            <Text
+                                                size="xs"
+                                                tt="uppercase"
+                                                ta="center"
+                                                fw={ 600 }
+                                            >
                                                 Prep
                                             </Text>
                                             <Text fw={ 500 } ta="center">
@@ -237,7 +234,12 @@ export default function RecipeDetail () {
                                         </div>
 
                                         <div>
-                                            <Text size="xs" tt="uppercase" ta="center" fw={ 600 }>
+                                            <Text
+                                                size="xs"
+                                                tt="uppercase"
+                                                ta="center"
+                                                fw={ 600 }
+                                            >
                                                 Cook
                                             </Text>
                                             <Text fw={ 500 } ta="center">
@@ -247,192 +249,235 @@ export default function RecipeDetail () {
                                         </div>
 
                                         <div>
-                                            <Text size="xs" tt="uppercase" ta="center" fw={ 600 }>
+                                            <Text
+                                                size="xs"
+                                                tt="uppercase"
+                                                ta="center"
+                                                fw={ 600 }
+                                            >
                                                 Serves
                                             </Text>
                                             <Text fw={ 500 } ta="center">
                                                 { item.serves === 0
                                                     ? item.serves
-                                                    : <Icon icon="IconInfinityOff" size="lg" /> }
+                                                    : <Icon
+                                                        icon="IconInfinityOff"
+                                                        size="lg"
+                                                    /> }
                                             </Text>
                                         </div>
 
                                         <div>
-                                            <Text size="xs" tt="uppercase" ta="center" fw={ 600 }>
+                                            <Text
+                                                size="xs"
+                                                tt="uppercase"
+                                                ta="center"
+                                                fw={ 600 }
+                                            >
                                                 Type
                                             </Text>
-                                            <Text fw={ 500 } tt="capitalize" ta="center">
+                                            <Text
+                                                fw={ 500 }
+                                                tt="capitalize"
+                                                ta="center"
+                                            >
                                                 { item.recipe_type }
                                             </Text>
                                         </div>
                                     </SimpleGrid>
-                                    <Image
-                                        src={ `/data/recipeImages/${
-                                            item.image_filename
-                                        }` }
-                                        w="100%"
-                                        fallbackSrc="/INF.png"
-                                    />
+                                    <div
+                                        style={
+                                            {
+                                                width: '100%',
+                                                aspectRatio: '16/9',
+                                                overflow: 'hidden',
+                                                borderRadius: Border.radius.md
+                                            }
+                                        }
+                                    >
+                                        <Image
+                                            src={ `/data/recipeImages/${ item.image_filename }` }
+                                            w="100%"
+                                            h="100%"
+                                            fit="cover"
+                                            fallbackSrc="/INF.png"
+                                        />
+                                    </div>
                                 </Stack>
-
                             </Accordion.Panel>
                         </Accordion.Item>
 
                         <Accordion.Item value="nutrition">
-                            <Accordion.Control icon={ <Icon stroke={ 2 } size="lg" icon="IconDeviceDesktopAnalytics" color={ Colours.accent.primary } /> }>
-                                <Title style={ { margin: "10px" } } order={ 3 }>
+                            <Accordion.Control
+                                icon={
+                                    <Icon
+                                        stroke={ 2 }
+                                        size="lg"
+                                        icon="IconChartHistogram"
+                                        color={ Colours.accent.primary }
+                                    />
+                                }
+                            >
+                                <Title
+                                    style={
+                                        {
+                                            margin: "10px"
+                                        }
+                                    }
+                                    order={ 3 }
+                                >
                                     Nutrition
                                 </Title>
                             </Accordion.Control>
                             <Accordion.Panel>
                                 <Text size="sm" c="dimmed">/Per Serving</Text>
                                 <Space h="md" />
-                                <SimpleGrid cols={ { base: 4, xs: 5, sm: 8 } }>
-                                    <div style={ { backgroundColor: "#f4f4f4", borderRadius: Border.radius.md, padding: Spacing.md } }>
-                                        <Text size="xs" ta="center" fw={ 600 }>Kcal</Text>
-                                        <Text fw={ 500 } ta="center">
-                                            { item.kcal }
-                                        </Text>
-                                    </div>
-
-                                    <div style={ { backgroundColor: "#f4f4f4", borderRadius: Border.radius.md, padding: Spacing.md } }>
-                                        <Text size="xs" ta="center" fw={ 600 }>Fat</Text>
-                                        <Text fw={ 500 } ta="center">
-                                            { item.fat }
-                                        </Text>
-                                    </div>
-
-                                    <div style={ { backgroundColor: "#f4f4f4", borderRadius: Border.radius.md, padding: Spacing.md } }>
-                                        <Text size="xs" ta="center" fw={ 600 }>Sat-Fat</Text>
-                                        <Text fw={ 500 } ta="center">
-                                            { item.saturates }
-                                        </Text>
-                                    </div>
-
-                                    <div style={ { backgroundColor: "#f4f4f4", borderRadius: Border.radius.md, padding: Spacing.md } }>
-                                        <Text size="xs" ta="center" fw={ 600 }>Carbs</Text>
-                                        <Text fw={ 500 } ta="center">
-                                            { item.carbs }
-                                        </Text>
-                                    </div>
-
-                                    <div style={ { backgroundColor: "#f4f4f4", borderRadius: Border.radius.md, padding: Spacing.md } }>
-                                        <Text size="xs" ta="center" fw={ 600 }>Sugars</Text>
-                                        <Text fw={ 500 } ta="center">
-                                            { item.sugars }
-                                        </Text>
-                                    </div>
-
-                                    <div style={ { backgroundColor: "#f4f4f4", borderRadius: Border.radius.md, padding: Spacing.md } }>
-                                        <Text size="xs" ta="center" fw={ 600 }>Fibre</Text>
-                                        <Text fw={ 500 } ta="center">
-                                            { item.fibre }
-                                        </Text>
-                                    </div>
-
-                                    <div style={ { backgroundColor: "#f4f4f4", borderRadius: Border.radius.md, padding: Spacing.md } }>
-                                        <Text size="xs" ta="center" fw={ 600 }>Protein</Text>
-                                        <Text fw={ 500 } ta="center">
-                                            { item.protein }
-                                        </Text>
-                                    </div>
-
-                                    <div style={ { backgroundColor: "#f4f4f4", borderRadius: Border.radius.md, padding: Spacing.md } }>
-                                        <Text size="xs" ta="center" fw={ 600 }>Salt</Text>
-                                        <Text fw={ 500 } ta="center">
-                                            { item.salt }
-                                        </Text>
-                                    </div>
+                                <SimpleGrid cols={ { base: 4, xs: 4, sm: 8 } }>
+                                    <RecipeStatBox
+                                        label="Kcal"
+                                        value={ item.kcal }
+                                    />
+                                    <RecipeStatBox
+                                        label="Fat"
+                                        value={ item.fat }
+                                    />
+                                    <RecipeStatBox
+                                        label="Sat-Fat"
+                                        value={ item.saturates }
+                                    />
+                                    <RecipeStatBox
+                                        label="Carbs"
+                                        value={ item.carbs }
+                                    />
+                                    <RecipeStatBox
+                                        label="Sugars"
+                                        value={ item.sugars }
+                                    />
+                                    <RecipeStatBox
+                                        label="Fibre"
+                                        value={ item.fibre }
+                                    />
+                                    <RecipeStatBox
+                                        label="Protein"
+                                        value={ item.protein }
+                                    />
+                                    <RecipeStatBox
+                                        label="Salt"
+                                        value={ item.salt }
+                                    />
                                 </SimpleGrid>
                             </Accordion.Panel>
                         </Accordion.Item>
 
                         <Accordion.Item value="ingredients">
                             <MultiplierAccordionControl
-                                icon={ <Icon stroke={ 2 } size="lg" icon="IconShoppingCart" color={ Colours.accent.primary } /> }
+                                icon={
+                                    <Icon
+                                        stroke={ 2 }
+                                        size="lg"
+                                        icon="IconBasket"
+                                        color={ Colours.accent.primary }
+                                    />
+                                }
                                 multiplierIcon={ ingredientMultiplier.icon }
                                 onMultiplierClick={ handleMultiplierClick }
                             >
-                                <Title style={ { margin: "10px" } } order={ 3 }>
+                                <Title
+                                    style={
+                                        { margin: "10px" }
+                                    }
+                                    order={ 3 }
+                                >
                                     Ingredients
                                 </Title>
                             </MultiplierAccordionControl>
                             <Accordion.Panel>
-                                <Stack gap="sm">
-                                    { item.ingredients && Array.isArray(item.ingredients) && item.ingredients.map((ing, index) => {
-                                        const calculatedAmount = ing.amount
-                                            ? parseFloat((ing.amount * ingredientMultiplier.multiplier).toFixed(2))
-                                            : '';
-
-                                        return (
-                                            <Checkbox
-                                                key={ index }
-                                                color={ Colours.accent.primary }
-                                                styles={ {
-                                                    input: { borderColor: Colours.accent.primary },
-                                                    body: { alignItems: 'center' }
-                                                } }
-                                                label={
-                                                    <Text fw={ 500 }>
-                                                        { calculatedAmount }
-                                                        { ' ' }
-                                                        { ing.unit }
-                                                        { ' ' }
-                                                        { ing.item }
-                                                        { ing.prep && (
-                                                            <Text component="span" c="dimmed">
-                                                                ,
-                                                                { ' ' }
-                                                                { ing.prep }
-                                                            </Text>
-                                                        ) }
-                                                    </Text>
-                                                }
-                                            />
-                                        );
-                                    }) }
-                                </Stack>
+                                <RecipeIngredientList
+                                    ingredients={ item.ingredients }
+                                    multiplier={
+                                        ingredientMultiplier.multiplier
+                                    }
+                                />
                             </Accordion.Panel>
                         </Accordion.Item>
 
                         <Accordion.Item value="instructions">
-                            <Accordion.Control icon={ <Icon stroke={ 2 } size="lg" icon="IconCooker" color={ Colours.accent.primary } /> }>
-                                <Title style={ { margin: "10px" } } order={ 3 }>
+                            <Accordion.Control
+                                icon={
+                                    <Icon
+                                        stroke={ 2 }
+                                        size="lg"
+                                        icon="IconCooker"
+                                        color={ Colours.accent.primary }
+                                    />
+                                }
+                            >
+                                <Title
+                                    style={
+                                        {
+                                            margin: "10px"
+                                        }
+                                    }
+                                    order={ 3 }
+                                >
                                     Instructions
                                 </Title>
                             </Accordion.Control>
                             <Accordion.Panel>
                                 <Stack gap="lg">
-                                    { item.method && Array.isArray(item.method) && item.method.map((step, index) => (
-                                        <Group key={ index } wrap="nowrap" align="flex-start" gap="md">
-                                            <div
-                                                style={ {
-                                                    backgroundColor: Colours.accent.primary,
-                                                    color: 'white',
-                                                    borderRadius: Border.radius.md,
-                                                    minWidth: '32px',
-                                                    height: '32px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    fontWeight: 600,
-                                                    fontSize: '0.875rem',
-                                                    flexShrink: 0
-                                                } }
-                                            >
-                                                { index + 1 }
-                                            </div>
-                                            <Text>
-                                                { step }
-                                            </Text>
-                                        </Group>
-                                    )) }
+                                    { item.method && Array.isArray(
+                                        item.method
+                                    ) && item.method.map(
+                                        (step, index) => (
+                                            <NumberedStep
+                                                key={ index }
+                                                step={ step }
+                                                index={ index }
+                                            />
+                                        )
+                                    ) }
                                 </Stack>
                             </Accordion.Panel>
                         </Accordion.Item>
+
+                        { item?.notes?.length > 0 && (
+                            <Accordion.Item value="notes">
+                                <Accordion.Control
+                                    icon={
+                                        <Icon
+                                            stroke={ 2 }
+                                            size="lg"
+                                            icon="IconNotes"
+                                            color={ Colours.accent.primary }
+                                        />
+                                    }
+                                >
+                                    <Title
+                                        style={
+                                            {
+                                                margin: "10px"
+                                            }
+                                        }
+                                        order={ 3 }
+                                    >
+                                        Notes
+                                    </Title>
+                                </Accordion.Control>
+                                <Accordion.Panel>
+                                    <Stack gap="lg">
+                                        { item.notes.map((note, index) => (
+                                            <NumberedStep
+                                                key={ index }
+                                                step={ note }
+                                                index={ index }
+                                            />
+                                        )) }
+                                    </Stack>
+                                </Accordion.Panel>
+                            </Accordion.Item>
+                        ) }
                     </Accordion>
                 ) }
-
             </ScrollArea>
         </>
     );
