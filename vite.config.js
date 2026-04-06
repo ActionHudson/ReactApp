@@ -6,8 +6,21 @@ export default defineConfig({
     publicDir: 'public',
     base: "/",
     server: {
+        host: true,
         port: 3000,
         proxy: {
+            '/aether/Login.php': {
+                target: 'http://localhost:5000',
+                changeOrigin: true
+            },
+            '/aether/check_auth.php': {
+                target: 'http://localhost:5000',
+                changeOrigin: true
+            },
+            '/aether/Logout.php': {
+                target: 'http://localhost:5000',
+                changeOrigin: true
+            },
             '/aether/Aether.php': {
                 target: 'http://localhost:5000',
                 changeOrigin: true,

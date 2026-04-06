@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
+import { AuthProvider } from './Auth/AuthProvider';
 import { Theme } from './Codex/ArcaneThreads/Theme';
 import Modal from './Codex/Runes/Modal/Modal';
 import Notifications from './Codex/Runes/Notification/Notification';
@@ -14,10 +15,12 @@ import './main.css';
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <MantineProvider theme={ Theme } withGlobalStyles withNormalizeCSS>
-            <Modal>
-                <Notifications />
-                <RouterProvider router={ router } />
-            </Modal>
+            <AuthProvider>
+                <Modal>
+                    <Notifications />
+                    <RouterProvider router={ router } />
+                </Modal>
+            </AuthProvider>
         </MantineProvider>
     </React.StrictMode>
 );

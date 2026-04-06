@@ -6,6 +6,8 @@
     "scripts": {
         "dev": "vite",
         "dev-db": "concurrently \"vite\" \"json-server --watch db.json --port 5000\"",
+        "dev:host": "vite --host",
+        "dev-db:host": "concurrently \"vite --host\" \"json-server --watch db.json --port 5000\"",
         "build": "vite build",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",

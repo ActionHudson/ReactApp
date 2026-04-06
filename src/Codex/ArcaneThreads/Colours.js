@@ -1,13 +1,13 @@
 export const Colours = {
-    primary: "var(--dynamic-main)",
-    secondary: "var(--dynamic-alt)",
-    background: "var(--dynamic-bg)",
+    primary: "#0f1a20",
+    secondary: "#ffffff",
+    background: "#e4e4e4",
     muted: "#364148",
     disabled: "#868e96",
     border: "#C4C4C4",
     accent: {
-        primary: "var(--dynamic-accent-p)",
-        secondary: "var(--dynamic-accent-s)",
+        primary: "#ff6b9d",
+        secondary: "#f18f01",
         primaryDarker: "#D7467B",
         secondaryDarker: "#D07D01"
     },

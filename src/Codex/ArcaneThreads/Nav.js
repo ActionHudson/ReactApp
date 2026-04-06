@@ -22,17 +22,20 @@ export const Nav = [
         icon: "IconFlask",
         label: "Dev Area",
         path: "/Dev",
-        disabled: true
+        disabled: true,
+        role: "admin"
     },
     {
         icon: "IconTopologyComplex",
         label: "AetherEditor",
-        path: "/AetherEditor"
+        path: "/AetherEditor",
+        role: "admin"
     },
     {
         icon: "IconListCheck",
         label: "Devs To Do",
-        path: "/ToDo"
+        path: "/ToDo",
+        role: "admin"
     },
     {
         icon: "IconSettings",

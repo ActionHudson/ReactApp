@@ -11,9 +11,7 @@ import Icon from "../../Runes/Icon/Icon";
 export default function PlantingChart () {
     const [ plantData, setPlantData ] = useState([]);
     const [ loading, setLoading ] = useState(true);
-    const [ sortStatus, setSortStatus ] = useState({
-
-    });
+    const [ sortStatus, setSortStatus ] = useState({});
     const statusColors = {
         SAH: { color: "#a4d13a", label: "Sow at Home" },
         SO: { color: "#eee296", label: "Sow Outside" },
@@ -42,6 +40,8 @@ export default function PlantingChart () {
     const months = [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" ];
 
     useEffect(() => {
+        let isMounted = true;
+
         fetch('/aether/manifest.php?table=plants')
             .then(res => {
                 if (!res.ok) {
@@ -50,20 +50,28 @@ export default function PlantingChart () {
                 return res.json();
             })
             .then(rawData => {
-                if (Array.isArray(rawData)) {
-                    const processedData = rawData.map(item => ({
-                        ...item,
-                        schedule: typeof item.schedule === 'string' ? JSON.parse(item.schedule) : item.schedule
-                    }));
-                    setPlantData(processedData);
+                if (isMounted) {
+                    if (Array.isArray(rawData)) {
+                        const processedData = rawData.map(item => ({
+                            ...item,
+                            schedule: typeof item.schedule === 'string' ? JSON.parse(item.schedule) : item.schedule
+                        }));
+                        setPlantData(processedData);
+                    }
+                    setLoading(false);
                 }
-                setLoading(false);
             })
             .catch(err => {
-                notify.error('Error!', 'Failed to connect to database.');
-                console.warn("Fetch failed, entering local dev fallback mode:", err);
-                setLoading(false);
+                if (isMounted) {
+                    notify.error('Error!', 'Failed to connect to database.');
+                    console.warn("Fetch failed, entering local dev fallback mode:", err);
+                    setLoading(false);
+                }
             });
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const columns = [

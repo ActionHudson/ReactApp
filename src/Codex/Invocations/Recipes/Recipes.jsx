@@ -22,46 +22,79 @@ export default function Recipes () {
     const [ loading, setLoading ] = useState(true);
 
     useEffect(() => {
-        fetch('/aether/manifest.php?table=recipes')
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data)) {
-                    setItems(data);
+        let isMounted = true;
 
-                    if (data.length === 0) {
-                        setLoading(false);
-                        return;
-                    }
+        const fetchRecipes = async () => {
+            setLoading(true);
 
-                    const imagePromises = data.map(
-                        recipe => new Promise(resolve => {
-                            const img = new window.Image();
-                            img.src = `/data/recipeImages/${
-                                recipe.image_filename
-                            }`;
-                            img.onload = resolve;
-                            img.onerror = resolve;
-                        })
-                    );
+            try {
+                const res = await fetch('/aether/manifest.php?table=recipes');
 
-                    Promise.all(imagePromises).then(() => {
-                        setLoading(false);
-                    });
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            })
-            .catch(err => {
-                notify.error('Error!', 'Failed to connect to database.');
-                console.error("Fetch error:", err);
-                setLoading(false);
-            });
+
+                const data = await res.json();
+
+                if (isMounted) {
+                    if (Array.isArray(data)) {
+                        setItems(data);
+
+                        if (data.length === 0) {
+                            setLoading(false);
+                            return;
+                        }
+
+                        const imagePromises = data.map(
+                            recipe => new Promise(resolve => {
+                                const img = new window.Image();
+                                img.src = `/data/recipeImages/${
+                                    recipe.image_filename
+                                }`;
+                                img.onload = resolve;
+                                img.onerror = resolve;
+                            })
+                        );
+
+                        Promise.all(imagePromises).then(() => {
+                            if (isMounted) {
+                                setLoading(false);
+                            }
+                        });
+                    } else {
+                        setLoading(false);
+                    }
+                }
+            } catch (err) {
+                if (isMounted) {
+                    notify.error('Error!', 'Failed to connect to database.');
+                    console.error("Fetch error:", err);
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchRecipes();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
+
         const initPage = async () => {
             const savedFavorites = await getAllFavorites();
-            setFavorites(new Set(savedFavorites));
+            if (isMounted) {
+                setFavorites(new Set(savedFavorites));
+            }
         };
         initPage();
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const handleBookmarkToggle = async (e, id) => {

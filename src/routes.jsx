@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 
+import ProtectedRoute from './Auth/ProtectedRoute';
 import { MainLayout } from './Codex/Grimoires/MainLayout/Mainlayout';
 import AetherEditor from './Codex/Invocations/AetherEditor/AetherEditor';
 import Dev from './Codex/Invocations/Dev/Dev';
@@ -28,12 +29,22 @@ export const router = createBrowserRouter(
                     path: '/Recipes',
                     children: [
                         { index: true, element: <Recipes /> },
-                        { path: 'Add', element: <RecipeAdd /> },
                         { path: ':id', element: <RecipeDetail /> },
-                        { path: 'Update', element: <RecipeUpdate /> }
+                        {
+                            path: 'Add', element: (
+                                <ProtectedRoute>
+                                    <RecipeAdd />
+                                </ProtectedRoute>
+                            )
+                        },
+                        {
+                            path: 'Update', element: (
+                                <ProtectedRoute>
+                                    <RecipeUpdate />
+                                </ProtectedRoute>)
+                        }
 
                         // { path: ':id/edit', element: <RecipeEdit /> }
-
                     ]
                 },
                 {
@@ -54,7 +65,11 @@ export const router = createBrowserRouter(
                 },
                 {
                     path: '/AetherEditor',
-                    element: <AetherEditor />
+                    element: (
+                        <ProtectedRoute requiredRole="admin">
+                            <AetherEditor />
+                        </ProtectedRoute>
+                    )
                 },
                 {
                     path: '/Settings',
