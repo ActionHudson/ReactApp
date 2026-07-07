@@ -7,39 +7,42 @@ export const Nav = [
     {
         icon: "IconNotebook",
         label: "Recipes",
-        path: "/Recipes"
+        path: "/recipes"
     },
     { icon: "IconListSearch",
         label: "Reference",
-        path: "/Reference"
+        path: "/reference"
     },
     {
         icon: "IconSeedling",
         label: "Planting",
-        path: "/PlantingChart"
-    },
-    {
-        icon: "IconFlask",
-        label: "Dev Area",
-        path: "/Dev",
-        disabled: true,
-        role: "admin"
+        path: "/plantingchart"
     },
     {
         icon: "IconTopologyComplex",
         label: "AetherEditor",
-        path: "/AetherEditor",
-        role: "admin"
+        path: "/aethereditor",
+        role: "admin",
+        visibleTo: ["admin"]
+
+        // disabled: true
     },
     {
         icon: "IconListCheck",
         label: "Devs To Do",
-        path: "/ToDo",
-        role: "admin"
+        path: "/todo",
+        role: "admin",
+        visibleTo: ["admin"]
     },
     {
         icon: "IconSettings",
         label: "Settings",
-        path: "/Settings"
+        path: "/settings"
+    },
+    {
+        icon: "Custom",
+        customIcon: "WowIcon.svg",
+        label: "WoW",
+        path: "/wow"
     }
 ];

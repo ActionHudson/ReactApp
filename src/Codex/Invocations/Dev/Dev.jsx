@@ -1,6 +1,4 @@
-import {
-    Stack
-} from '@mantine/core';
+import { Stack } from '@mantine/core';
 
 export default function Dev () {
 

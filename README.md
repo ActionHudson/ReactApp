@@ -66,7 +66,6 @@ npm run preview      # Preview production build locally
 ```bash
 npm run lint         # Run ESLint to check code quality
 npm run lint:fix     # Automatically fix ESLint issues
-npm run format       # Format code with Prettier
 ```
 
 ### Testing
@@ -103,7 +102,6 @@ npm run build-storybook  # Build Storybook for production
 
 - **TypeScript/JSX** - Type-safe JavaScript with React
 - **ESLint** - Code linting and style enforcement
-- **Prettier** - Code formatting
 - **Storybook** - Component development and documentation
 
 ## 📚 Development Tools Explained
@@ -138,17 +136,6 @@ Visit `http://localhost:6006` to view your component library
 - Enforces consistent code style
 - Integrates with your editor for real-time feedback
 - Automatic fixing for many issues
-
-### Prettier
-
-**Purpose**: Consistent code formatting
-
-**Benefits:**
-
-- Eliminates debates about code formatting
-- Automatically formats on save (with editor integration)
-- Consistent style across the entire codebase
-- Focus on logic instead of formatting
 
 ### Vite
 

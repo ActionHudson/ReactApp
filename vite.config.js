@@ -9,7 +9,7 @@ export default defineConfig({
         host: true,
         port: 3000,
         proxy: {
-            '/aether/Login.php': {
+            '/aether/login.php': {
                 target: 'http://localhost:5000',
                 changeOrigin: true
             },
@@ -17,28 +17,25 @@ export default defineConfig({
                 target: 'http://localhost:5000',
                 changeOrigin: true
             },
-            '/aether/Logout.php': {
+            '/aether/logout.php': {
                 target: 'http://localhost:5000',
                 changeOrigin: true
             },
-            '/aether/Aether.php': {
+            '/aether/aether.php': {
                 target: 'http://localhost:5000',
                 changeOrigin: true,
+                rewrite: path => {
+                    const url = new URL(path, 'http://localhost');
+                    const table = url.searchParams.get('table');
+                    const id = url.searchParams.get('id');
 
-                configure: proxy => {
-                    proxy.on('proxyReq', (proxyReq, req) => {
-                        if (req.method !== 'GET') { return; }
+                    if (table && id) {
+                        return `/${ table }/${ id }`;
+                    } else if (table) {
+                        return `/${ table }`;
+                    }
 
-                        const url = new URL(req.url, 'http://localhost');
-                        const table = url.searchParams.get('table');
-                        const id = url.searchParams.get('id');
-
-                        if (table && id) {
-                            proxyReq.path = `/${ table }/${ id }`;
-                        } else if (table) {
-                            proxyReq.path = `/${ table }`;
-                        }
-                    });
+                    return path;
                 }
             },
             '/aether/manifest.php': {

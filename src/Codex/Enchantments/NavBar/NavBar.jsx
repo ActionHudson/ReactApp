@@ -11,24 +11,27 @@ import Text from '../../Runes/Text/Text';
 import NavItem from '../../Sigils/NavItem/NavItem';
 
 export default function NavBar ({ navlinks }) {
-    const { isLoggedIn, setIsLoggedIn, openLoginModal } = useAuth();
+    const { isLoggedIn, setIsLoggedIn, openLoginModal, role, setRole } = useAuth();
+
+    const filteredLinks = navlinks.filter(link => !link.visibleTo || link.visibleTo && link.visibleTo.includes(role));
 
     const limit = 5;
-    const totalItems = navlinks.length + 1;
+    const totalItems = filteredLinks.length + 1;
     const showMenu = totalItems > limit;
 
-    const visibleLinks = showMenu ? navlinks.slice(0, limit - 1) : navlinks;
-    const menuLinks = showMenu ? navlinks.slice(limit - 1) : [];
+    const visibleLinks = showMenu ? filteredLinks.slice(0, limit - 1) : filteredLinks;
+    const menuLinks = showMenu ? filteredLinks.slice(limit - 1) : [];
     const isMenuChildActive = menuLinks.some(link => link.active);
 
     const handleAuthClick = async () => {
         if (isLoggedIn) {
             try {
-                await fetch('/aether/Logout.php', {
+                await fetch('/aether/logout.php', {
                     method: 'POST',
                     credentials: 'include'
                 });
                 setIsLoggedIn(false);
+                setRole(null);
             } catch (error) {
                 console.error(error);
             }
@@ -47,6 +50,7 @@ export default function NavBar ({ navlinks }) {
                 <NavItem
                     key={ index }
                     icon={ item.icon }
+                    customIcon={ item.customIcon }
                     label={ item.label }
                     path={ item.path }
                     active={ item.active || false }
@@ -126,6 +130,7 @@ export default function NavBar ({ navlinks }) {
                                 leftSection={
                                     <Icon
                                         icon={ item.icon }
+                                        customIcon={ item.customIcon }
                                         size={ 16 }
                                         style={
                                             { color: item.active
@@ -173,6 +178,7 @@ NavBar.propTypes = {
         label: PropTypes.string.isRequired,
         path: PropTypes.string.isRequired,
         active: PropTypes.bool,
-        disabled: PropTypes.bool
+        disabled: PropTypes.bool,
+        visibleTo: PropTypes.arrayOf(PropTypes.string)
     })).isRequired
 };

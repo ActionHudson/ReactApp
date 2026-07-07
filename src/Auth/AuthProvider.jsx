@@ -35,7 +35,7 @@ function LoginForm ({ setIsLoggedIn, setRole }) {
         setIsLoading(true);
 
         try {
-            const response = await fetch('/aether/Login.php', {
+            const response = await fetch('/aether/login.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

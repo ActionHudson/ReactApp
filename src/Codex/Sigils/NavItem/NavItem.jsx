@@ -21,6 +21,7 @@ import Text from "../../Runes/Text/Text";
 
 export default function NavItem ({
     icon,
+    customIcon = undefined,
     label,
     path = undefined,
     disabled = false,
@@ -49,7 +50,7 @@ export default function NavItem ({
                 gap={ Spacing.sm }
                 { ...props }
             >
-                <Icon icon={ icon } size="xl" />
+                <Icon icon={ icon } customIcon={ customIcon } size="xl" />
                 <Text size="sm">
                     { label }
                 </Text>
@@ -60,6 +61,7 @@ export default function NavItem ({
 
 NavItem.propTypes = {
     icon: PropTypes.string.isRequired,
+    customIcon: PropTypes.string,
     label: PropTypes.string.isRequired,
     path: PropTypes.string,
     disabled: PropTypes.bool,
