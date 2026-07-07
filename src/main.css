@@ -1,4 +1,0 @@
-.myButton:disabled,
-.myButton[data-disabled] {
-    border-color: transparent !important;
-}
