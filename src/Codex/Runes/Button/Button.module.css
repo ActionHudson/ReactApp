@@ -1,0 +1,7 @@
+.button {
+    &:disabled,
+    &[data-disabled] {
+        border-color: var(--mantine-color-gray-3);
+        background-color: transparent;
+    }
+}
