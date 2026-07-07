@@ -69,7 +69,7 @@ const EXPANSION_MAX_SKILL = {
 export default function WoW () {
     const [ selected, setSelected ] = useState([]);
     const [ sortStatus, setSortStatus ] = useState({
-        columnAccessor: 'name',
+        columnAccessor: '',
         direction: 'asc'
     });
 
