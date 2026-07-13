@@ -98,7 +98,6 @@ export default function Reference () {
     });
 
     useEffect(() => {
-        setLoading(true);
         fetch('/aether/manifest.php?table=references')
             .then(res => res.json())
             .then(data => {

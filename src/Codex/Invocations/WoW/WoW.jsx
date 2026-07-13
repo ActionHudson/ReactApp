@@ -87,7 +87,6 @@ export default function WoW () {
     });
 
     useEffect(() => {
-        setLoading(true);
         fetch('/aether/manifest.php?table=wow_characters')
             .then(res => res.json())
             .then(data => {
@@ -207,6 +206,8 @@ export default function WoW () {
             )
         },
         { accessor: 'class', title: 'Class', sortable: true,
+            titleStyle: { minWidth: 140 },
+            cellsStyle: () => ({ minWidth: 140 }),
             render: record => {
                 const color = CLASS_COLORS[record.class];
                 const isPriest = record.class === 'Priest';
