@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $config = require(__DIR__ . '/../config.php');
-$allowedTables = ['plants', 'recipes', 'references'];
+$allowedTables = ['plants', 'recipes', 'references', 'wow_characters'];
 
 try {
     $dsn = "mysql:host={$config['host']};dbname={$config['database']};charset=utf8mb4";

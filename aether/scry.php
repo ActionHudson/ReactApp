@@ -10,7 +10,7 @@ if (!is_array($config)) {
     exit;
 }
 
-$allowedTables = ['recipes', 'references', 'plants'];
+$allowedTables = ['recipes', 'references', 'plants', 'wow_characters'];
 $table = $_GET['table'] ?? '';
 $id = $_GET['id'] ?? null;
 

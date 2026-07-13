@@ -1,4 +1,4 @@
-import { Badge, Box, Group, Stack } from '@mantine/core';
+import { Badge, Box, Group, LoadingOverlay, Stack } from '@mantine/core';
 import sortBy from 'lodash/sortBy';
 import { DataTable } from 'mantine-datatable';
 import { useMemo, useState } from 'react';
@@ -254,6 +254,25 @@ export default function WoW () {
             display: 'flex',
             flexDirection: 'column'
         } }>
+            { /* <LoadingOverlay
+                visible={ loading }
+                zIndex={ 1000 }
+                overlayProps={ {
+                    radius: "sm",
+                    blur: 1
+                } }
+                loaderProps={ {
+                    size: 200,
+                    color: Colours.accent.primary,
+                    type: 'oval'
+                } }
+                style={ {
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: 0
+                } }
+            /> */ }
             <Stack gap="md" pt="md" style={ { flex: 1, minHeight: 0 } }>
                 <FilterControls
                     data={ groupedData }

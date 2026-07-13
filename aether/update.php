@@ -19,7 +19,7 @@ if (!$rawInput) {
 
 $isMulti = isset($rawInput[0]) && is_array($rawInput[0]);
 $items = $isMulti ? $rawInput : [$rawInput];
-$allowedTables = ['plants', 'recipes', 'references'];
+$allowedTables = ['plants', 'recipes', 'references', 'wow_characters'];
 $affectedRows = 0;
 
 try {

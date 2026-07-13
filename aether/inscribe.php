@@ -17,7 +17,7 @@ if (!$input || !isset($input['table']) || !isset($input['data']) || !is_array($i
     exit;
 }
 
-$allowedTables = ['plants', 'recipes', 'references'];
+$allowedTables = ['plants', 'recipes', 'references', 'wow_characters'];
 $table = $input['table'];
 
 if (!in_array($table, $allowedTables)) {
