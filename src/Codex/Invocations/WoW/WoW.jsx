@@ -1,15 +1,14 @@
 import { Badge, Box, Group, LoadingOverlay, Stack } from '@mantine/core';
 import sortBy from 'lodash/sortBy';
 import { DataTable } from 'mantine-datatable';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Colours } from '../../ArcaneThreads/Colours.js';
+import { notify } from '../../ArcaneThreads/Notify';
 import { FontSize, FontWeight } from '../../ArcaneThreads/Sizes.js';
 import FilterControls from '../../Enchantments/FilterControls/FilterControls.jsx';
 import Icon from '../../Runes/Icon/Icon.jsx';
 import Text from '../../Runes/Text/Text.jsx';
-
-import { RAW_DATA } from './DATA.js';
 
 const FILTER_KEYS = [
     'faction',
@@ -66,21 +65,57 @@ const EXPANSION_MAX_SKILL = {
     tww: 100,
     midnight: 100
 };
+
+const parseJsonData = (val, fallback) => {
+    if (typeof val !== 'string') {
+        return val || fallback;
+    }
+    try {
+        return JSON.parse(val);
+    } catch (e) {
+        return fallback;
+    }
+};
+
 export default function WoW () {
+    const [ rawData, setRawData ] = useState([]);
+    const [ loading, setLoading ] = useState(true);
     const [ selected, setSelected ] = useState([]);
     const [ sortStatus, setSortStatus ] = useState({
         columnAccessor: '',
         direction: 'asc'
     });
 
-    const initialRecords = useMemo(() => RAW_DATA.characters);
+    useEffect(() => {
+        setLoading(true);
+        fetch('/aether/manifest.php?table=wow_characters')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    const parsedData = data.map(record => ({
+                        ...record,
+                        available_roles: parseJsonData(record.available_roles, {}),
+                        primary_professions: parseJsonData(record.primary_professions, []),
+                        secondary_professions: parseJsonData(record.secondary_professions, []),
+                        heritage_armor_unlocked: Boolean(Number(record.heritage_armor_unlocked))
+                    }));
+                    setRawData(parsedData);
+                }
+                setLoading(false);
+            })
+            .catch(err => {
+                notify.error('Fetch Error', 'Could not load reference data.');
+                console.error(err);
+                setLoading(false);
+            });
+    }, []);
 
     const groupedData = useMemo(() => {
         const groups = {};
 
         FILTER_KEYS.forEach(key => {
             groups[key] = new Set();
-            initialRecords.forEach(record => {
+            rawData.forEach(record => {
                 const val = record[key];
                 if (Array.isArray(val)) {
                     val.forEach(v => {
@@ -98,7 +133,7 @@ export default function WoW () {
             group,
             items: Array.from(itemsSet).filter(Boolean)
         }));
-    }, [initialRecords]);
+    }, [rawData]);
 
     const valueToGroup = useMemo(() => {
         const map = {};
@@ -111,7 +146,7 @@ export default function WoW () {
     }, [groupedData]);
 
     const records = useMemo(() => {
-        let filtered = initialRecords;
+        let filtered = rawData;
 
         if (selected.length > 0) {
             const selectionsByGroup = selected.reduce((acc, val) => {
@@ -142,7 +177,7 @@ export default function WoW () {
         }
 
         return filtered;
-    }, [ initialRecords, selected, valueToGroup, sortStatus ]);
+    }, [ rawData, selected, valueToGroup, sortStatus ]);
 
     const columns = [
         { accessor: 'name', title: 'Name', sortable: true,
@@ -254,7 +289,7 @@ export default function WoW () {
             display: 'flex',
             flexDirection: 'column'
         } }>
-            { /* <LoadingOverlay
+            <LoadingOverlay
                 visible={ loading }
                 zIndex={ 1000 }
                 overlayProps={ {
@@ -272,7 +307,7 @@ export default function WoW () {
                     flexDirection: 'column',
                     minHeight: 0
                 } }
-            /> */ }
+            />
             <Stack gap="md" pt="md" style={ { flex: 1, minHeight: 0 } }>
                 <FilterControls
                     data={ groupedData }
