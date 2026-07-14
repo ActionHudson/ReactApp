@@ -1,6 +1,7 @@
 import { Badge, Box, Group, LoadingOverlay, Stack } from '@mantine/core';
 import sortBy from 'lodash/sortBy';
 import { DataTable } from 'mantine-datatable';
+import PropTypes from "prop-types";
 import { useEffect, useMemo, useState } from 'react';
 
 import { Colours } from '../../ArcaneThreads/Colours.js';
@@ -71,10 +72,70 @@ const parseJsonData = (val, fallback) => {
         return val || fallback;
     }
     try {
-        return JSON.parse(val);
+        let cleanVal = val.trim();
+        if (cleanVal.startsWith("'") && cleanVal.endsWith("'")) {
+            cleanVal = cleanVal.slice(1, -1);
+        }
+        return JSON.parse(cleanVal);
     } catch (e) {
         return fallback;
     }
+};
+
+const ProfessionList = ({ title, professions }) => {
+    if (!professions || professions.length === 0) {
+        return null;
+    }
+
+    return (
+        <Stack gap="xl">
+            <Text fw={ 700 } size="xl">
+                { title }
+            </Text>
+            { professions.map(prof => (
+                <Group key={ prof.name } px="md">
+                    <Text size="lg" fw={ 600 } w={ 120 }>
+                        { prof.name }
+                    </Text>
+                    <Group gap="xs" pl="md">
+                        { Object.entries(EXPANSION_MAP).map(([ key, name ]) => {
+                            const currentProgress = prof.progress?.[key] ?? 0;
+                            const isMaxed = currentProgress >= (EXPANSION_MAX_SKILL[key] || 100) && currentProgress > 0;
+
+                            return (
+                                <div
+                                    key={ key }
+                                    style={ {
+                                        backgroundColor: isMaxed ? Colours.accent.primary : "#e4e4e4",
+                                        color: 'white',
+                                        padding: '8px 8px',
+                                        borderRadius: '12px',
+                                        fontSize: '12px',
+                                        fontWeight: 600,
+                                        width: '65px'
+                                    } }
+                                >
+                                    <Stack gap="8" align="center">
+                                        <Text size="xs" fw={ 600 } ta="center" color={ isMaxed ? Colours.secondary : Colours.muted }>
+                                            { name }
+                                        </Text>
+                                        <Text size="xs" fw={ 600 } ta="center" color={ isMaxed ? Colours.secondary : Colours.primary }>
+                                            { `${ currentProgress }/${ EXPANSION_MAX_SKILL[key] }` }
+                                        </Text>
+                                    </Stack>
+                                </div>
+                            );
+                        }) }
+                    </Group>
+                </Group>
+            )) }
+        </Stack>
+    );
+};
+
+ProfessionList.propTypes = {
+    title: PropTypes.string.isRequired,
+    professions: PropTypes.array.isRequired
 };
 
 export default function WoW () {
@@ -93,12 +154,23 @@ export default function WoW () {
                 if (Array.isArray(data)) {
                     const parsedData = data.map(record => ({
                         ...record,
-                        available_roles: parseJsonData(record.available_roles, {}),
-                        primary_professions: parseJsonData(record.primary_professions, []),
-                        secondary_professions: parseJsonData(record.secondary_professions, []),
-                        heritage_armor_unlocked: Boolean(Number(record.heritage_armor_unlocked))
+                        available_roles: parseJsonData(
+                            record.available_roles, {}
+                        ),
+                        primary_professions: parseJsonData(
+                            record.primary_professions, []
+                        ),
+                        secondary_professions: parseJsonData(
+                            record.secondary_professions, []
+                        ),
+                        heritage_armor_unlocked: Boolean(Number(
+                            record.heritage_armor_unlocked
+                        ))
                     }));
                     setRawData(parsedData);
+                } else {
+                    notify.error('Data Error', 'The server returned an invalid format.');
+                    console.error('Invalid data format:', data);
                 }
                 setLoading(false);
             })
@@ -162,7 +234,9 @@ export default function WoW () {
                     ([ group, valuesSet ]) => {
                         const recordVal = record[group];
                         if (Array.isArray(recordVal)) {
-                            return recordVal.some(val => valuesSet.has(String(val.name)));
+                            return recordVal.some(
+                                val => valuesSet.has(String(val.name))
+                            );
                         }
                         return valuesSet.has(String(recordVal));
                     }
@@ -172,13 +246,15 @@ export default function WoW () {
 
         if (sortStatus.columnAccessor) {
             const sorted = sortBy(filtered, sortStatus.columnAccessor);
-            filtered = sortStatus.direction === 'desc' ? sorted.reverse() : sorted;
+            filtered = sortStatus.direction === 'desc'
+                ? sorted.reverse()
+                : sorted;
         }
 
         return filtered;
     }, [ rawData, selected, valueToGroup, sortStatus ]);
 
-    const columns = [
+    const columns = useMemo(() => [
         { accessor: 'name', title: 'Name', sortable: true,
             render: record => (
                 <Stack gap="xs">
@@ -199,6 +275,8 @@ export default function WoW () {
             )
         },
         { accessor: 'race', title: 'Race', sortable: true,
+            titleStyle: { minWidth: 120 },
+            cellsStyle: () => ({ minWidth: 120 }),
             render: record => (
                 <Text size={ FontSize.md } fw={ 500 }>
                     { record.race }
@@ -219,7 +297,9 @@ export default function WoW () {
                         size="lg"
                         styles={ {
                             root: {
-                                border: isPriest ? '1px solid #C4C4C4' : '1px solid transparent'
+                                border: isPriest
+                                    ? '1px solid #C4C4C4'
+                                    : '1px solid transparent'
                             },
                             label: {
                                 color: 'color-mix(in srgb, currentColor, black 40%)'
@@ -233,7 +313,9 @@ export default function WoW () {
                                     borderRadius: '50%',
                                     backgroundColor: 'currentColor',
                                     marginLeft: '6px',
-                                    border: isPriest ? '1px solid #C4C4C4' : undefined
+                                    border: isPriest
+                                        ? '1px solid #C4C4C4'
+                                        : undefined
                                 } }
                             />
                         }
@@ -279,7 +361,7 @@ export default function WoW () {
                 </Text>
             )
         }
-    ];
+    ], []);
 
     return (
         <Stack style={ {
@@ -347,90 +429,8 @@ export default function WoW () {
                             },
                             content: ({ record }) => (
                                 <Stack gap="lg" p="md" mt="md">
-                                    { record.primary_professions?.length > 0 && (
-                                        <Stack gap="xl">
-                                            <Text fw={ 700 } size="xl">Primary Professions</Text>
-                                            { record.primary_professions.map(prof => (
-                                                <Group key={ prof.name } px="md">
-                                                    <Text size="lg" fw={ 600 } w={ 120 }>
-                                                        { prof.name }
-                                                    </Text>
-                                                    <Group gap="xs">
-                                                        { Object.entries(EXPANSION_MAP).map(([ key, name ]) => {
-                                                            const currentProgress = prof.progress?.[key] ?? 0;
-                                                            const isMaxed = currentProgress >= (EXPANSION_MAX_SKILL[key] || 100) && currentProgress > 0;
-
-                                                            return (
-                                                                <div
-                                                                    key={ key }
-                                                                    style={ {
-                                                                        backgroundColor: isMaxed ? Colours.accent.primary : "#e4e4e4",
-                                                                        color: 'white',
-                                                                        padding: '8px 8px',
-                                                                        borderRadius: '12px',
-                                                                        fontSize: '12px',
-                                                                        fontWeight: 600,
-                                                                        width: '65px'
-                                                                    } }
-                                                                >
-                                                                    <Stack gap="8" align="center">
-                                                                        <Text size="xs" fw={ 600 } ta="center" colour={ isMaxed ? Colours.secondary : Colours.muted }>
-                                                                            { name }
-                                                                        </Text>
-                                                                        <Text size="xs" fw={ 600 } ta="center" colour={ isMaxed ? Colours.secondary : Colours.primary }>
-                                                                            { `${ currentProgress }/${ EXPANSION_MAX_SKILL[key] }` }
-                                                                        </Text>
-                                                                    </Stack>
-                                                                </div>
-                                                            );
-                                                        }) }
-                                                    </Group>
-                                                </Group>
-                                            )) }
-                                        </Stack>
-                                    ) }
-                                    { record.secondary_professions?.length > 0 && (
-                                        <Stack gap="xl" mt="md">
-                                            <Text fw={ 700 } size="xl">Secondary Professions</Text>
-                                            { record.secondary_professions.map(prof => (
-                                                <Group key={ prof.name } px="md">
-                                                    <Text size="lg" fw={ 600 } w={ 120 }>
-                                                        { prof.name }
-                                                    </Text>
-                                                    <Group gap="xs">
-                                                        { Object.entries(EXPANSION_MAP).map(([ key, name ]) => {
-                                                            const currentProgress = prof.progress?.[key] ?? 0;
-                                                            const isMaxed = currentProgress >= (EXPANSION_MAX_SKILL[key] || 100) && currentProgress > 0;
-
-                                                            return (
-                                                                <div
-                                                                    key={ key }
-                                                                    style={ {
-                                                                        backgroundColor: isMaxed ? Colours.accent.primary : "#e4e4e4",
-                                                                        color: 'white',
-                                                                        padding: '8px 8px',
-                                                                        borderRadius: '12px',
-                                                                        fontSize: '12px',
-                                                                        fontWeight: 600,
-                                                                        width: '65px'
-                                                                    } }
-                                                                >
-                                                                    <Stack gap="8" align="center">
-                                                                        <Text size="xs" fw={ 600 } ta="center" colour={ isMaxed ? Colours.secondary : Colours.muted }>
-                                                                            { name }
-                                                                        </Text>
-                                                                        <Text size="xs" fw={ 600 } ta="center" colour={ isMaxed ? Colours.secondary : Colours.primary }>
-                                                                            { `${ currentProgress }/${ EXPANSION_MAX_SKILL[key] }` }
-                                                                        </Text>
-                                                                    </Stack>
-                                                                </div>
-                                                            );
-                                                        }) }
-                                                    </Group>
-                                                </Group>
-                                            )) }
-                                        </Stack>
-                                    ) }
+                                    <ProfessionList title="Primary Professions" professions={ record.primary_professions } />
+                                    <ProfessionList title="Secondary Professions" professions={ record.secondary_professions } />
                                 </Stack>
                             )
                         } }
