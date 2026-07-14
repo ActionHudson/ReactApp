@@ -255,6 +255,15 @@ export default function WoW () {
     }, [ rawData, selected, valueToGroup, sortStatus ]);
 
     const columns = useMemo(() => [
+        { accessor: 'id', title: '',
+            titleStyle: { maxWidth: 24 },
+            cellsStyle: () => ({ maxWidth: 24 }),
+            render: record => (
+                <Text size="sm" disabled={ true }>
+                    { record.id }
+                </Text>
+            )
+        },
         { accessor: 'name', title: 'Name', sortable: true,
             render: record => (
                 <Stack gap="xs">
@@ -427,12 +436,26 @@ export default function WoW () {
                             collapseProps: {
                                 transitionDuration: 75
                             },
-                            content: ({ record }) => (
-                                <Stack gap="lg" p="md" mt="md">
-                                    <ProfessionList title="Primary Professions" professions={ record.primary_professions } />
-                                    <ProfessionList title="Secondary Professions" professions={ record.secondary_professions } />
-                                </Stack>
-                            )
+                            content: ({ record }) => {
+                                const hasPrimary = record.primary_professions?.length > 0;
+                                const hasSecondary = record.secondary_professions?.length > 0;
+
+                                return hasPrimary || hasSecondary ? (
+                                    <Stack gap="lg" p="md" mt="md">
+                                        { hasPrimary && (
+                                            <ProfessionList title="Primary Professions" professions={ record.primary_professions } />
+                                        ) }
+
+                                        { hasSecondary && (
+                                            <ProfessionList title="Secondary Professions" professions={ record.secondary_professions } />
+                                        ) }
+                                    </Stack>
+                                ) : (
+                                    <Stack p="md">
+                                        <Text>No Professions</Text>
+                                    </Stack>
+                                );
+                            }
                         } }
                     />
                 </div>
