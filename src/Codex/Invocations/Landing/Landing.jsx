@@ -12,7 +12,7 @@ export default function Landing () {
                 backgroundColor: 'white',
                 padding: '1rem',
                 borderRadius: '0.5rem',
-                height: '100%',
+                flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 width: '100%'
