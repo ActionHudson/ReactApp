@@ -18,7 +18,8 @@ const FILTER_KEYS = [
     'armor_type',
     'specialization',
     'primary_professions',
-    'secondary_professions'
+    'secondary_professions',
+    'game_version'
 ];
 
 const CLASS_COLORS = {
@@ -276,19 +277,11 @@ export default function WoW () {
                 </Stack>
             )
         },
-        { accessor: 'faction', title: 'Faction', sortable: true,
-            render: record => (
-                <Text size={ FontSize.md } fw={ 600 }>
-                    { record.faction }
-                </Text>
-            )
-        },
-        { accessor: 'race', title: 'Race', sortable: true,
-            titleStyle: { minWidth: 120 },
-            cellsStyle: () => ({ minWidth: 120 }),
+        { accessor: 'level', title: 'Level', sortable: true,
+            textAlign: 'center',
             render: record => (
                 <Text size={ FontSize.md } fw={ 500 }>
-                    { record.race }
+                    { record.level }
                 </Text>
             )
         },
@@ -334,18 +327,26 @@ export default function WoW () {
                 );
             }
         },
+        { accessor: 'faction', title: 'Faction', sortable: true,
+            render: record => (
+                <Text size={ FontSize.md } fw={ 600 }>
+                    { record.faction }
+                </Text>
+            )
+        },
+        { accessor: 'race', title: 'Race', sortable: true,
+            titleStyle: { minWidth: 120 },
+            cellsStyle: () => ({ minWidth: 120 }),
+            render: record => (
+                <Text size={ FontSize.md } fw={ 500 }>
+                    { record.race }
+                </Text>
+            )
+        },
         { accessor: 'armor_type', title: 'Armor', sortable: true,
             render: record => (
                 <Text size={ FontSize.md } fw={ 500 }>
                     { record.armor_type }
-                </Text>
-            )
-        },
-        { accessor: 'level', title: 'Level', sortable: true,
-            textAlign: 'center',
-            render: record => (
-                <Text size={ FontSize.md } fw={ 500 }>
-                    { record.level }
                 </Text>
             )
         },

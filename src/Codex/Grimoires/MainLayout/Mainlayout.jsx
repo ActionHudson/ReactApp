@@ -53,7 +53,6 @@ export const MainLayout = () => {
 
             <AppShell.Main
                 bg={ Colours.background }
-                h="100dvh"
                 style={ {
                     display: 'flex',
                     flexDirection: 'column',
