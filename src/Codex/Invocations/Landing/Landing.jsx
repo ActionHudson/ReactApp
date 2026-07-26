@@ -6,18 +6,14 @@ export default function Landing () {
     const { isLoggedIn, role } = useAuth();
 
     return (
-        <Stack
-            align="flex-start"
-            style={ {
-                backgroundColor: 'white',
-                padding: '1rem',
-                borderRadius: '0.5rem',
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                width: '100%'
-            } }
-        >
+        <Stack style={ {
+            backgroundColor: 'white',
+            padding: '1rem',
+            borderRadius: '0.5rem',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+        } }>
             { isLoggedIn ? (
                 <Stack gap="xs">
                     <Text fw={ 500 } c="green">

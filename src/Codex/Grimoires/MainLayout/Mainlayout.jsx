@@ -53,7 +53,7 @@ export const MainLayout = () => {
 
             <AppShell.Main
                 bg={ Colours.background }
-                h="100%"
+                h="100dvh"
                 style={ {
                     display: 'flex',
                     flexDirection: 'column',
@@ -63,8 +63,8 @@ export const MainLayout = () => {
                 <Container
                     fluid
                     p={ Spacing.md }
+                    h="100%"
                     style={ {
-                        flex: 1,
                         display: 'flex',
                         flexDirection: 'column',
                         minHeight: 0,
