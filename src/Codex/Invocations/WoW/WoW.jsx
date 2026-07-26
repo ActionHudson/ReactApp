@@ -108,7 +108,6 @@ const ProfessionList = ({ title, professions }) => {
                                     key={ key }
                                     style={ {
                                         backgroundColor: isMaxed ? Colours.accent.primary : "#e4e4e4",
-                                        color: 'white',
                                         padding: '8px 8px',
                                         borderRadius: '12px',
                                         fontSize: '12px',
@@ -117,10 +116,18 @@ const ProfessionList = ({ title, professions }) => {
                                     } }
                                 >
                                     <Stack gap="8" align="center">
-                                        <Text size="xs" fw={ 600 } ta="center" color={ isMaxed ? Colours.secondary : Colours.muted }>
+                                        <Text
+                                            size="xs"
+                                            fw={ 600 }
+                                            ta="center"
+                                            colour={ isMaxed ? Colours.secondary : Colours.muted }>
                                             { name }
                                         </Text>
-                                        <Text size="xs" fw={ 600 } ta="center" color={ isMaxed ? Colours.secondary : Colours.primary }>
+                                        <Text
+                                            size="xs"
+                                            fw={ 600 }
+                                            ta="center"
+                                            colour={ isMaxed ? Colours.secondary : Colours.primary }>
                                             { `${ currentProgress }/${ EXPANSION_MAX_SKILL[key] }` }
                                         </Text>
                                     </Stack>
