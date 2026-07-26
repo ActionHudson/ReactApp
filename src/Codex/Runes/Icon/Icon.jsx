@@ -25,7 +25,7 @@ export default function Icon ({
     if (icon === 'Custom' && customIcon) {
         return (
             <img
-                src={ `/src/Assets/customIcons/${ customIcon }` }
+                src={ `/customIcons/${ customIcon }` }
                 alt="Custom icon"
                 { ...props }
             />
