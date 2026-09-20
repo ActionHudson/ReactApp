@@ -1,29 +1,26 @@
-import { ModalsProvider } from '@mantine/modals';
-import PropTypes from 'prop-types';
+import { Box, Group } from '@mantine/core';
+import { modals } from '@mantine/modals';
 
 import { Colours } from '../../ArcaneThreads/Colours';
 
-export default function Modal ({ children }) {
-    return (
-        <ModalsProvider
-            modalProps={ {
-                centered: true,
-                overlayProps: {
-                    backgroundOpacity: 0.55,
-                    blur: 3
-                },
-                styles: {
-                    content: { backgroundColor: Colours.secondary },
-                    header: { backgroundColor: Colours.secondary },
-                    title: { color: Colours.primary, fontWeight: 700 }
-                }
-            } }
-        >
-            { children }
-        </ModalsProvider>
-    );
-}
+export const Modal = settings => {
+    const { title, ...restSettings } = settings;
 
-Modal.propTypes = {
-    children: PropTypes.node.isRequired
+    modals.open({
+        ...restSettings,
+        title: title ? (
+            <Group spacing="xs">
+                <Box
+                    w={ 10 }
+                    h={ 10 }
+                    style={ {
+                        borderRadius: '50%',
+                        backgroundColor: Colours.accent.primary,
+                        border: Colours.accent.primary
+                    } }
+                />
+                { title }
+            </Group>
+        ) : undefined
+    });
 };

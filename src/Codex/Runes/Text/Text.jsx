@@ -13,7 +13,7 @@ import { FontSize } from '../../ArcaneThreads/Sizes';
  * @param {Object} props
  * @param {string} props.children The text content to display.
  * @param {string} [props.size="md"] The size of the text, mapped to the FontSize design tokens.
- * @param {boolean} [props.dimmed=false] Whether the text color should appear dimmed.
+ * @param {boolean} [props.disabled=false] Whether the text color should appear dimmed.
  * @param {string} [props.colour="#ffffff"] The colour of the text.
 */
 
@@ -27,7 +27,7 @@ export default function Text ({
     return (
         <MantineText
             component="span"
-            size={ FontSize[size] }
+            size={ FontSize[size] || size }
             c={ disabled ? Colours.disabled : colour }
             { ...props }
         >

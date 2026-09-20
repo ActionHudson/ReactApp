@@ -177,7 +177,7 @@ export default [
             'init-declarations': [ 'error', 'always' ],
             'logical-assignment-operators': [ 'error', 'always' ],
             'no-alert': 'warn',
-            'no-console': 'warn',
+            'no-console': [ "error", { allow: [ "warn", "error" ] } ],
             'no-array-constructor': 'error',
             'no-bitwise': 'error',
             'no-caller': 'error',

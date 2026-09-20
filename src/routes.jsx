@@ -14,7 +14,8 @@ import RecipeUpdate from './Codex/Invocations/RecipeUpdate/RecipeUpdate';
 import Reference from './Codex/Invocations/Reference/Reference';
 import Settings from './Codex/Invocations/Settings/Settings';
 import ToDo from './Codex/Invocations/ToDo/ToDo';
-import WoW from './Codex/Invocations/WoW/WoW';
+import WoWCharacters from './Codex/Invocations/WoWCharacters/WoWCharacters';
+import WoWProfessions from './Codex/Invocations/WoWProfessions/WoWProfessions';
 
 const basename = "/";
 
@@ -71,8 +72,12 @@ export const router = createBrowserRouter(
                     element: <Kanban />
                 },
                 {
-                    path: '/wow',
-                    element: <WoW />
+                    path: '/wow/characters',
+                    element: <WoWCharacters />
+                },
+                {
+                    path: '/wow/professions',
+                    element: <WoWProfessions />
                 },
                 {
                     path: '/todo',

@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Colours } from '../Codex/ArcaneThreads/Colours';
 import Button from '../Codex/Runes/Button/Button';
+import { Modal } from '../Codex/Runes/Modal/Modal';
 
 import { AuthContext } from './useAuth';
 
@@ -104,14 +105,18 @@ export const AuthProvider = ({ children }) => {
     const [ role, setRole ] = useState(null);
     const [ isLoading, setIsLoading ] = useState(true);
 
-    const openLoginModal = () => modals.open({
-        title: 'Login',
-        centered: true,
-        children: <LoginForm
-            setIsLoggedIn={ setIsLoggedIn }
-            setRole={ setRole }
-        />
-    });
+    const openLoginModal = () => {
+        Modal({
+            title: 'Login',
+            centered: true,
+            children: (
+                <LoginForm
+                    setIsLoggedIn={ setIsLoggedIn }
+                    setRole={ setRole }
+                />
+            )
+        });
+    };
 
     useEffect(() => {
         const verifyLoginStatus = async () => {

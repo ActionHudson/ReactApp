@@ -22,25 +22,40 @@ export default function Icon ({
     size = 'md',
     ...props
 }) {
-    if (icon === 'Custom' && customIcon) {
+    const renderIcon = () => {
+        if (icon === 'Custom' && customIcon) {
+            return (
+                <img
+                    src={ `/customIcons/${ customIcon }` }
+                    alt="Custom icon"
+                    { ...props }
+                />
+            );
+        }
+
+        const IconComponent = TablerIcons[icon];
+
+        if (!IconComponent) {
+            const FallbackIcon = TablerIcons.IconMoodPuzzled;
+            return (
+                <FallbackIcon
+                    size={ FontSize[size] }
+                    stroke={ stroke }
+                    { ...props }
+                />
+            );
+        }
+
         return (
-            <img
-                src={ `/customIcons/${ customIcon }` }
-                alt="Custom icon"
+            <IconComponent
+                size={ FontSize[size] }
+                stroke={ stroke }
                 { ...props }
             />
         );
-    }
+    };
 
-    const IconComponent = TablerIcons[icon];
-
-    return (
-        <IconComponent
-            size={ FontSize[size] }
-            stroke={ stroke }
-            { ...props }
-        />
-    );
+    return renderIcon();
 }
 
 Icon.propTypes = {

@@ -40,7 +40,7 @@ export default function Settings () {
                     onClick={ onClick }
                     label="Cancel"
                     variant="outline"
-                    color={ Colours.muted }
+                    color={ Colours.disabled }
                 />
             )
         },

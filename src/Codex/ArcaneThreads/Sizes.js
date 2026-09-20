@@ -24,7 +24,10 @@ export const Spacing = {
 };
 
 export const Border = {
-    size: '1px',
+    size: {
+        md: '1px',
+        lg: '2px'
+    },
     type: {
         solid: 'solid',
         dashed: 'dashed',

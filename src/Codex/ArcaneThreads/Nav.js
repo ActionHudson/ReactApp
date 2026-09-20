@@ -40,9 +40,29 @@ export const Nav = [
         path: "/settings"
     },
     {
+
         icon: "Custom",
         customIcon: "WowIcon.svg",
         label: "WoW",
-        path: "/wow"
+        modal: {
+            title: "World of Warcraft",
+            text: "Select a section to view:",
+            options: [
+                {
+                    title: "Characters",
+                    text: "View your characters to see their levels, class, " +
+                        "faction, race, armor, and roles.",
+                    link: "/wow/characters",
+                    icon: "IconUsersGroup"
+                },
+                {
+                    title: "Professions",
+                    text: "View a breakdown of your professions and which " +
+                        "characters learned them.",
+                    link: "/wow/professions",
+                    icon: "IconHammer"
+                }
+            ]
+        }
     }
 ];

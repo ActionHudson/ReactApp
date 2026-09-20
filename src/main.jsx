@@ -6,20 +6,19 @@ import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 
 import { AuthProvider } from './Auth/AuthProvider';
-import { Theme } from './Codex/ArcaneThreads/Theme';
-import Modal from './Codex/Runes/Modal/Modal';
+import ModalsProvider from './Codex/Runes/ModalsProvider/ModalsProvider';
 import Notifications from './Codex/Runes/Notification/Notification';
 import { router } from './routes';
 import './main.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <MantineProvider theme={ Theme } withGlobalStyles withNormalizeCSS>
+        <MantineProvider>
             <AuthProvider>
-                <Modal>
+                <ModalsProvider>
                     <Notifications />
                     <RouterProvider router={ router } />
-                </Modal>
+                </ModalsProvider>
             </AuthProvider>
         </MantineProvider>
     </React.StrictMode>

@@ -4,8 +4,8 @@ import { DataTable } from 'mantine-datatable';
 import PropTypes from "prop-types";
 import { useEffect, useMemo, useState } from 'react';
 
-import { Colours } from '../../ArcaneThreads/Colours.js';
-import { notify } from '../../ArcaneThreads/Notify';
+import { Class_Colours, Colours } from '../../ArcaneThreads/Colours.js';
+import { notify } from '../../ArcaneThreads/Notify.js';
 import { FontSize, FontWeight } from '../../ArcaneThreads/Sizes.js';
 import FilterControls from '../../Enchantments/FilterControls/FilterControls.jsx';
 import Icon from '../../Runes/Icon/Icon.jsx';
@@ -21,22 +21,6 @@ const FILTER_KEYS = [
     'secondary_professions',
     'game_version'
 ];
-
-const CLASS_COLORS = {
-    Shaman: '#0070DE',
-    Mage: '#69CCF0',
-    Warrior: '#C79C6E',
-    Priest: '#FFFFFF',
-    Hunter: '#ABD473',
-    Druid: '#FF7C0A',
-    Rogue: '#FFF569',
-    Paladin: '#F58CBA',
-    Warlock: '#9482C9',
-    Monk: '#00FF96',
-    'Death Knight': '#C41F3B',
-    'Demon Hunter': '#A330C9',
-    Evoker: '#33937F'
-};
 
 const EXPANSION_MAP = {
     classic: "Classic",
@@ -120,7 +104,7 @@ const ProfessionList = ({ title, professions }) => {
                                             size="xs"
                                             fw={ 600 }
                                             ta="center"
-                                            colour={ isMaxed ? Colours.secondary : Colours.muted }>
+                                            colour={ isMaxed ? Colours.secondary : Colours.primary }>
                                             { name }
                                         </Text>
                                         <Text
@@ -146,7 +130,7 @@ ProfessionList.propTypes = {
     professions: PropTypes.array.isRequired
 };
 
-export default function WoW () {
+export default function WoWCharacters () {
     const [ rawData, setRawData ] = useState([]);
     const [ loading, setLoading ] = useState(true);
     const [ selected, setSelected ] = useState([]);
@@ -177,7 +161,10 @@ export default function WoW () {
                     }));
                     setRawData(parsedData);
                 } else {
-                    notify.error('Data Error', 'The server returned an invalid format.');
+                    notify.error(
+                        'Data Error',
+                        'The server returned an invalid format.'
+                    );
                     console.error('Invalid data format:', data);
                 }
                 setLoading(false);
@@ -296,7 +283,7 @@ export default function WoW () {
             titleStyle: { minWidth: 140 },
             cellsStyle: () => ({ minWidth: 140 }),
             render: record => {
-                const color = CLASS_COLORS[record.class];
+                const color = Class_Colours[record.class];
                 const isPriest = record.class === 'Priest';
 
                 return (
